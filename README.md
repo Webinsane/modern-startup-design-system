@@ -2,6 +2,27 @@
 
 A complete design system for building SaaS dashboards, booking platforms, and startup applications. 29 components, 72 avatar assets, full dark mode support, and a 3-layer token architecture that re-skins with a single variable change.
 
+## One-Shot Prompt
+
+Copy-paste this into Claude Code, Cursor, or any AI coding tool to start building with this design system immediately:
+
+```
+Clone the design system from https://github.com/Webinsane/modern-startup-design-system
+into a design-system/ folder in my project. Then read design-system/SKILL.md — that is
+the design system you must follow for all frontend work.
+
+Rules:
+- Link design-system/tokens/tokens.css and design-system/components.css in every HTML page
+- Never hardcode colors, spacing, or font sizes — always use CSS variables from tokens.css
+- Before building any component, read its spec in design-system/components/
+- Check design-system/examples/ for working implementation patterns
+- Use semantic HTML and the exact component class names from components.css
+- All buttons must be pills (border-radius: var(--radius-full))
+- Dark mode works by adding data-theme="dark" to <html>
+
+Now build me: [describe what you want here]
+```
+
 ## Quick Start
 
 ### 1. Copy into your project
@@ -61,27 +82,6 @@ The AI will use the tokens, follow the component specs, and produce consistent o
 | `components/*.md` | Detailed spec per UI pattern (HTML, tokens, states, responsive, accessibility) |
 | `examples/*.html` | Working implementations — the source of truth alongside component specs |
 | `assets/avatars/` | 72 ready-to-use avatar photos |
-
-## One-Shot Prompt
-
-Copy-paste this into Claude Code, Cursor, or any AI coding tool to start building with this design system immediately:
-
-```
-Clone the design system from https://github.com/Webinsane/modern-startup-design-system
-into a design-system/ folder in my project. Then read design-system/SKILL.md — that is
-the design system you must follow for all frontend work.
-
-Rules:
-- Link design-system/tokens/tokens.css and design-system/components.css in every HTML page
-- Never hardcode colors, spacing, or font sizes — always use CSS variables from tokens.css
-- Before building any component, read its spec in design-system/components/
-- Check design-system/examples/ for working implementation patterns
-- Use semantic HTML and the exact component class names from components.css
-- All buttons must be pills (border-radius: var(--radius-full))
-- Dark mode works by adding data-theme="dark" to <html>
-
-Now build me: [describe what you want here]
-```
 
 ## Customizing
 
