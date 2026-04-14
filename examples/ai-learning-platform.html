@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI — Curated AI Learning Platform</title>
+  <link rel="stylesheet" href="../tokens/tokens.css">
+  <link rel="stylesheet" href="../components.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    /* ── Page layout (no sidebar) ── */
+    body { background: var(--color-bg); }
+
+    .page-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 var(--space-xl);
+    }
+
+    /* ── Top header ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      background: var(--color-surface);
+      border-bottom: var(--border-width) var(--border-style) var(--color-border-light);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .site-header__inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-md) var(--space-xl);
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+    .site-header__brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: var(--text-h3-size);
+      color: var(--color-text-primary);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .site-header__brand-icon {
+      width: 32px; height: 32px;
+      background: var(--color-secondary);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-white);
+    }
+    .site-header__brand-icon [data-lucide] { width: 18px; height: 18px; }
+    .site-header__search {
+      flex: 1;
+      min-width: 0;
+    }
+    .site-header__right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-shrink: 0;
+    }
+
+    /* ── Hero area ── */
+    .feed-hero {
+      padding: var(--space-3xl) 0 var(--space-xl);
+      text-align: center;
+    }
+    .feed-hero__title {
+      font-family: var(--font-display);
+      font-size: var(--text-hero-size);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--color-text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-sm);
+    }
+    .feed-hero__desc {
+      font-size: var(--text-lg-size);
+      color: var(--color-text-secondary);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Tag filter row ── */
+    .tag-filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-md) 0;
+    }
+    .tag-filters__label {
+      font-size: var(--text-xs-size);
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-right: var(--space-2xs);
+    }
+
+    /* ── Sort bar ── */
+    .sort-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) 0 var(--space-md);
+      border-bottom: var(--border-width) var(--border-style) var(--color-border-light);
+      margin-bottom: var(--space-lg);
+    }
+    .sort-bar__count {
+      font-size: var(--text-small-size);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Post cards ── */
+    .post-feed {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding-bottom: var(--space-4xl);
+    }
+    .post-card {
+      display: flex;
+      gap: var(--space-lg);
+      background: var(--color-surface);
+      border: var(--border-width) var(--border-style) var(--color-border-light);
+      border-radius: var(--radius-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-card);
+      transition: box-shadow var(--transition-base) var(--easing-default), transform var(--transition-base) var(--easing-default);
+    }
+    .post-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    /* Upvote column */
+    .post-card__vote {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3xs);
+      flex-shrink: 0;
+      min-width: 48px;
+    }
+    .post-card__vote-btn {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-lg);
+      border: var(--border-width) var(--border-style) var(--color-border);
+      background: var(--color-surface);
+      cursor: pointer;
+      color: var(--color-text-muted);
+      transition: all var(--transition-fast) var(--easing-default);
+    }
+    .post-card__vote-btn:hover {
+      border-color: var(--color-secondary);
+      color: var(--color-secondary);
+      background: var(--color-secondary-light);
+    }
+    .post-card__vote-btn--active {
+      border-color: var(--color-secondary);
+      color: var(--color-white);
+      background: var(--color-secondary);
+    }
+    .post-card__vote-btn--active:hover {
+      background: var(--color-secondary-hover);
+    }
+    .post-card__vote-btn [data-lucide] { width: 18px; height: 18px; }
+    .post-card__vote-count {
+      font-size: var(--text-small-size);
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    /* Content area */
+    .post-card__content { flex: 1; min-width: 0; }
+    .post-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-2xs);
+    }
+    .post-card__title {
+      font-size: var(--text-h3-size);
+      font-weight: var(--text-h3-weight);
+      color: var(--color-text-primary);
+      line-height: var(--text-h3-lh);
+      text-decoration: none;
+    }
+    .post-card__title:hover { color: var(--color-secondary); }
+    .post-card__desc {
+      font-size: var(--text-body-size);
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+      margin-bottom: var(--space-sm);
+    }
+    .post-card__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-sm);
+    }
+    .post-card__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      font-size: var(--text-xs-size);
+      color: var(--color-text-muted);
+    }
+    .post-card__meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+    }
+    .post-card__meta-item [data-lucide] { width: 13px; height: 13px; }
+    .post-card__thumb {
+      width: 120px; height: 86px;
+      border-radius: var(--radius-md);
+      background: var(--color-bg);
+      border: var(--border-width) var(--border-style) var(--color-border-light);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-text-muted);
+      overflow: hidden;
+    }
+    .post-card__thumb [data-lucide] { width: 28px; height: 28px; opacity: 0.4; }
+    .post-card__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── Sidebar stats (optional right column) ── */
+    .page-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    .sidebar-panel {
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+    .sidebar-card {
+      background: var(--color-surface);
+      border: var(--border-width) var(--border-style) var(--color-border-light);
+      border-radius: var(--radius-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-card);
+    }
+    .sidebar-card__title {
+      font-size: var(--text-small-size);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-md);
+    }
+    .sidebar-card__list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .sidebar-card__list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--text-body-size);
+      color: var(--color-text-primary);
+      cursor: pointer;
+      padding: var(--space-2xs) 0;
+      transition: color var(--transition-fast) var(--easing-default);
+    }
+    .sidebar-card__list-item:hover { color: var(--color-secondary); }
+    .sidebar-card__list-count {
+      font-size: var(--text-xs-size);
+      color: var(--color-text-muted);
+      background: var(--color-bg);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    .trending-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-xs) 0;
+    }
+    .trending-item__rank {
+      font-size: var(--text-small-size);
+      font-weight: 800;
+      color: var(--color-border);
+      min-width: 20px;
+      line-height: 1.4;
+    }
+    .trending-item__title {
+      font-size: var(--text-small-size);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      line-height: 1.4;
+      cursor: pointer;
+      transition: color var(--transition-fast) var(--easing-default);
+    }
+    .trending-item__title:hover { color: var(--color-secondary); }
+    .trending-item__meta {
+      font-size: var(--text-xs-size);
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Dark toggle float ── */
+    .dark-toggle-float {
+      position: fixed; bottom: var(--space-xl); right: var(--space-xl); z-index: var(--z-toast);
+      display: flex; align-items: center; gap: var(--space-xs);
+      background: var(--color-surface); border: var(--border-width) var(--border-style) var(--color-border);
+      border-radius: var(--radius-full); padding: var(--space-xs) var(--space-md);
+      box-shadow: var(--shadow-lg); cursor: pointer;
+      font-size: var(--text-small-size); font-weight: 500; color: var(--color-text-secondary);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+      }
+      .sidebar-panel {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .sidebar-card { flex: 1; min-width: 240px; }
+    }
+    @media (max-width: 640px) {
+      .page-wrap { padding: 0 var(--space-md); }
+      .site-header__inner { padding: var(--space-sm) var(--space-md); gap: var(--space-sm); }
+      .site-header__brand { font-size: var(--text-body-size); }
+      .feed-hero__title { font-size: var(--text-h1-size); }
+      .feed-hero__desc { font-size: var(--text-body-size); }
+      .post-card { flex-direction: column; gap: var(--space-sm); }
+      .post-card__vote { flex-direction: row; }
+      .post-card__thumb { display: none; }
+      .sidebar-panel { flex-direction: column; }
+      .sidebar-card { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="#" class="site-header__brand">
+        <span class="site-header__brand-icon"><i data-lucide="brain"></i></span>
+        LearnAI
+      </a>
+      <div class="site-header__search">
+        <div class="filter-bar__search-wrap">
+          <div class="filter-bar__search-icon"><i data-lucide="search"></i></div>
+          <input class="filter-bar__search-input" type="text" placeholder="Search courses, tools, tutorials…">
+        </div>
+      </div>
+      <div class="site-header__right">
+        <button class="btn btn--ghost btn--sm btn--icon"><i data-lucide="bell"></i></button>
+        <button class="btn btn--primary btn--sm"><i data-lucide="plus"></i> Submit</button>
+        <div class="avatar avatar--sm avatar--e"><img src="../assets/avatars/avatar-a01.png" alt="User"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <div class="page-wrap">
+    <div class="feed-hero">
+      <h1 class="feed-hero__title">Discover the best AI learning resources</h1>
+      <p class="feed-hero__desc">Curated courses, tutorials, and tools — voted on by the community. Find what actually works.</p>
+    </div>
+
+    <!-- ═══════════════ TAG FILTERS ═══════════════ -->
+    <div class="tag-filters">
+      <span class="tag-filters__label">AI Tools</span>
+      <div class="pill-filter">
+        <button class="pill-filter__item pill-filter__item--active">All</button>
+        <button class="pill-filter__item">Claude</button>
+        <button class="pill-filter__item">ChatGPT</button>
+        <button class="pill-filter__item">Midjourney</button>
+        <button class="pill-filter__item">Cursor</button>
+        <button class="pill-filter__item">Stable Diffusion</button>
+      </div>
+    </div>
+    <div class="tag-filters" style="padding-top:0;">
+      <span class="tag-filters__label">Type</span>
+      <div class="pill-filter">
+        <button class="pill-filter__item pill-filter__item--active">All</button>
+        <button class="pill-filter__item"><i data-lucide="code-2" style="width:14px;height:14px;"></i> Code</button>
+        <button class="pill-filter__item"><i data-lucide="image" style="width:14px;height:14px;"></i> Image</button>
+        <button class="pill-filter__item"><i data-lucide="video" style="width:14px;height:14px;"></i> Video</button>
+        <button class="pill-filter__item"><i data-lucide="book-open" style="width:14px;height:14px;"></i> Course</button>
+        <button class="pill-filter__item"><i data-lucide="wrench" style="width:14px;height:14px;"></i> Tool</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════ SORT BAR ═══════════════ -->
+    <div class="sort-bar">
+      <div class="tab-group">
+        <button class="tab-group__item tab-group__item--active"><i data-lucide="flame" style="width:15px;height:15px;"></i> Top</button>
+        <button class="tab-group__item"><i data-lucide="clock" style="width:15px;height:15px;"></i> Newest</button>
+        <button class="tab-group__item"><i data-lucide="trending-up" style="width:15px;height:15px;"></i> Trending</button>
+      </div>
+      <span class="sort-bar__count">248 resources</span>
+    </div>
+
+    <!-- ═══════════════ MAIN GRID ═══════════════ -->
+    <div class="page-grid">
+
+      <!-- ── Feed ── -->
+      <div class="post-feed">
+
+        <!-- Post 1 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn post-card__vote-btn--active"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">342</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">Building Production Apps with Claude — From Zero to Deploy</a>
+            </div>
+            <p class="post-card__desc">A comprehensive 8-part course covering Claude's API, tool use, system prompts, streaming, and real-world deployment patterns. Includes a capstone project building a full SaaS app.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--info">Claude</span>
+              <span class="tag tag--confirmed">Course</span>
+              <span class="tag tag--pending">Code</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--a"><img src="../assets/avatars/avatar-a03.png" alt=""></div> Sarah Chen</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 2h ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 47 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 186 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-secondary-light), var(--color-info-light));">
+            <i data-lucide="brain"></i>
+          </div>
+        </article>
+
+        <!-- Post 2 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">287</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">Prompt Engineering Masterclass: Advanced Techniques for 2026</a>
+            </div>
+            <p class="post-card__desc">Stop writing basic prompts. Learn chain-of-thought, few-shot patterns, structured outputs, and how to build reliable AI workflows that don't break in production.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--info">ChatGPT</span>
+              <span class="tag tag--info">Claude</span>
+              <span class="tag tag--waiting">Video</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--b"><img src="../assets/avatars/avatar-b05.png" alt=""></div> Alex Rivera</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 5h ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 31 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 142 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-warning-light), var(--color-pending-light));">
+            <i data-lucide="sparkles"></i>
+          </div>
+        </article>
+
+        <!-- Post 3 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">204</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">Midjourney v7: Complete Guide to Photorealistic AI Art</a>
+            </div>
+            <p class="post-card__desc">Deep dive into Midjourney's latest model. Covers style references, character consistency, inpainting, and building a visual brand with AI-generated assets.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--alert">Midjourney</span>
+              <span class="tag tag--pending">Image</span>
+              <span class="tag tag--confirmed">Course</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--c"><img src="../assets/avatars/avatar-a08.png" alt=""></div> Kim Tanaka</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 8h ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 22 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 97 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-error-light), var(--color-warning-light));">
+            <i data-lucide="palette"></i>
+          </div>
+        </article>
+
+        <!-- Post 4 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn post-card__vote-btn--active"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">189</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">Cursor IDE — 10x Your Coding Speed with AI Pair Programming</a>
+            </div>
+            <p class="post-card__desc">Practical walkthrough of Cursor's AI features: multi-file editing, codebase chat, custom rules, and workflow tips from engineers who ship with it daily.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--waiting">Cursor</span>
+              <span class="tag tag--pending">Code</span>
+              <span class="tag tag--waiting">Video</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--d"><img src="../assets/avatars/avatar-a15.png" alt=""></div> Nadia Osei</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 1d ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 56 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 211 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-success-light), var(--color-info-light));">
+            <i data-lucide="terminal"></i>
+          </div>
+        </article>
+
+        <!-- Post 5 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">156</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">RAG from Scratch: Build a Knowledge Base That Actually Works</a>
+            </div>
+            <p class="post-card__desc">Hands-on tutorial series on retrieval-augmented generation. Covers embeddings, vector stores, chunking strategies, re-ranking, and evaluation — no hand-waving.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--info">Claude</span>
+              <span class="tag tag--pending">Code</span>
+              <span class="tag tag--confirmed">Course</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--e"><img src="../assets/avatars/avatar-a22.png" alt=""></div> Marcus Rivera</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 1d ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 38 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 164 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-info-light), var(--color-secondary-light));">
+            <i data-lucide="database"></i>
+          </div>
+        </article>
+
+        <!-- Post 6 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">134</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">AI Agent Patterns: Autonomous Workflows with Tool Use</a>
+            </div>
+            <p class="post-card__desc">Explore the architecture behind AI agents: planning loops, tool orchestration, memory systems, and guardrails. Real code examples with Claude and LangGraph.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--info">Claude</span>
+              <span class="tag tag--pending">Code</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--f"><img src="../assets/avatars/avatar-b03.png" alt=""></div> Lena Kovac</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 2d ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 19 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 88 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-secondary-light), var(--color-success-light));">
+            <i data-lucide="bot"></i>
+          </div>
+        </article>
+
+        <!-- Post 7 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">118</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">Stable Diffusion XL: Local Setup & Fine-Tuning Guide</a>
+            </div>
+            <p class="post-card__desc">Get SDXL running locally with ComfyUI. Covers LoRA training, ControlNet, upscaling pipelines, and optimizing for M-series Macs and consumer GPUs.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--alert">Stable Diffusion</span>
+              <span class="tag tag--pending">Image</span>
+              <span class="tag tag--pending">Code</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--a"><img src="../assets/avatars/avatar-a05.png" alt=""></div> Jordan Park</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 3d ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 27 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 73 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-error-light), var(--color-pending-light));">
+            <i data-lucide="image"></i>
+          </div>
+        </article>
+
+        <!-- Post 8 -->
+        <article class="post-card">
+          <div class="post-card__vote">
+            <button class="post-card__vote-btn"><i data-lucide="chevron-up"></i></button>
+            <span class="post-card__vote-count">95</span>
+          </div>
+          <div class="post-card__content">
+            <div class="post-card__header">
+              <a href="#" class="post-card__title">ChatGPT for Data Analysis: Replace Your Jupyter Notebooks</a>
+            </div>
+            <p class="post-card__desc">Video series showing how to use ChatGPT's code interpreter for EDA, visualization, and reporting. Includes datasets and prompt templates you can steal.</p>
+            <div class="post-card__tags">
+              <span class="tag tag--info">ChatGPT</span>
+              <span class="tag tag--waiting">Video</span>
+              <span class="tag tag--pending">Code</span>
+            </div>
+            <div class="post-card__meta">
+              <span class="post-card__meta-item"><div class="avatar avatar--xs avatar--b"><img src="../assets/avatars/avatar-a12.png" alt=""></div> Amir Hassan</span>
+              <span class="post-card__meta-item"><i data-lucide="clock"></i> 4d ago</span>
+              <span class="post-card__meta-item"><i data-lucide="message-circle"></i> 14 comments</span>
+              <span class="post-card__meta-item"><i data-lucide="bookmark"></i> 61 saves</span>
+            </div>
+          </div>
+          <div class="post-card__thumb" style="background:linear-gradient(135deg, var(--color-warning-light), var(--color-success-light));">
+            <i data-lucide="bar-chart-3"></i>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar-panel">
+
+        <!-- Trending -->
+        <div class="sidebar-card">
+          <div class="sidebar-card__title">Trending this week</div>
+          <div class="trending-item">
+            <span class="trending-item__rank">1</span>
+            <div>
+              <div class="trending-item__title">Claude Code ships background agents</div>
+              <div class="trending-item__meta">412 upvotes · 89 comments</div>
+            </div>
+          </div>
+          <div class="trending-item">
+            <span class="trending-item__rank">2</span>
+            <div>
+              <div class="trending-item__title">GPT-5 benchmark results leaked</div>
+              <div class="trending-item__meta">387 upvotes · 156 comments</div>
+            </div>
+          </div>
+          <div class="trending-item">
+            <span class="trending-item__rank">3</span>
+            <div>
+              <div class="trending-item__title">Midjourney v7 is jaw-dropping</div>
+              <div class="trending-item__meta">298 upvotes · 62 comments</div>
+            </div>
+          </div>
+          <div class="trending-item">
+            <span class="trending-item__rank">4</span>
+            <div>
+              <div class="trending-item__title">Fine-tuning for under $10</div>
+              <div class="trending-item__meta">245 upvotes · 41 comments</div>
+            </div>
+          </div>
+          <div class="trending-item">
+            <span class="trending-item__rank">5</span>
+            <div>
+              <div class="trending-item__title">The AI coding tools tier list (2026)</div>
+              <div class="trending-item__meta">231 upvotes · 78 comments</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Popular tags -->
+        <div class="sidebar-card">
+          <div class="sidebar-card__title">Popular topics</div>
+          <ul class="sidebar-card__list">
+            <li class="sidebar-card__list-item">
+              <span>Prompt Engineering</span>
+              <span class="sidebar-card__list-count">124</span>
+            </li>
+            <li class="sidebar-card__list-item">
+              <span>AI Agents</span>
+              <span class="sidebar-card__list-count">98</span>
+            </li>
+            <li class="sidebar-card__list-item">
+              <span>RAG / Retrieval</span>
+              <span class="sidebar-card__list-count">87</span>
+            </li>
+            <li class="sidebar-card__list-item">
+              <span>Image Generation</span>
+              <span class="sidebar-card__list-count">76</span>
+            </li>
+            <li class="sidebar-card__list-item">
+              <span>Fine-Tuning</span>
+              <span class="sidebar-card__list-count">54</span>
+            </li>
+            <li class="sidebar-card__list-item">
+              <span>AI for Business</span>
+              <span class="sidebar-card__list-count">43</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Community stats -->
+        <div class="sidebar-card">
+          <div class="sidebar-card__title">Community</div>
+          <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-small-size);color:var(--color-text-secondary);">Members</span>
+              <span style="font-size:var(--text-small-size);font-weight:700;color:var(--color-text-primary);">12,847</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-small-size);color:var(--color-text-secondary);">Resources</span>
+              <span style="font-size:var(--text-small-size);font-weight:700;color:var(--color-text-primary);">2,341</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:var(--text-small-size);color:var(--color-text-secondary);">This week</span>
+              <span class="tag tag--confirmed" style="font-size:10px;padding:2px 8px;">
+                <i data-lucide="trending-up" style="width:10px;height:10px;display:inline-block;vertical-align:-1px;margin-right:2px;"></i>+48
+              </span>
+            </div>
+            <div style="margin-top:var(--space-xs);">
+              <div class="avatar-group" style="display:flex;">
+                <div class="avatar avatar--xs" style="border:2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a01.png" alt=""></div>
+                <div class="avatar avatar--xs" style="border:2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a05.png" alt=""></div>
+                <div class="avatar avatar--xs" style="border:2px solid var(--color-surface);"><img src="../assets/avatars/avatar-b03.png" alt=""></div>
+                <div class="avatar avatar--xs" style="border:2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a08.png" alt=""></div>
+                <div class="avatar avatar--xs" style="border:2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a15.png" alt=""></div>
+              </div>
+              <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);margin-top:var(--space-2xs);display:block;">+12.8k learning together</span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════ DARK TOGGLE ═══════════════ -->
+  <div class="dark-toggle-float" onclick="document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); localStorage.setItem('theme', document.documentElement.getAttribute('data-theme'));">
+    <i data-lucide="moon" style="width:14px;height:14px;"></i>
+    <label class="toggle toggle--sm" style="pointer-events:none;">
+      <input type="checkbox" class="toggle__input" id="themeToggle">
+      <div class="toggle__track"><div class="toggle__knob"></div></div>
+    </label>
+    <i data-lucide="sun" style="width:14px;height:14px;"></i>
+  </div>
+
+  <script>
+    // Init Lucide icons
+    lucide.createIcons();
+
+    // Restore theme
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('themeToggle').checked = true;
+    }
+
+    // Keep toggle in sync
+    document.querySelector('.dark-toggle-float').addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.getElementById('themeToggle').checked = isDark;
+    });
+  </script>
+
+</body>
+</html>

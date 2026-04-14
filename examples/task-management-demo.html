@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow — Project Management</title>
+  <link rel="stylesheet" href="../tokens/tokens.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ============================================
+       TASK MANAGEMENT DEMO — page layout only
+       All component styles from components.css
+       ============================================ */
+
+    .page-content { padding: var(--space-xl); }
+
+    /* Kanban board horizontal scroll */
+    .kanban-board {
+      display: flex;
+      gap: var(--space-lg);
+      overflow-x: auto;
+      padding-bottom: var(--space-sm);
+      -webkit-overflow-scrolling: touch;
+    }
+    .kanban-board::-webkit-scrollbar { height: 6px; }
+    .kanban-board::-webkit-scrollbar-track { background: transparent; }
+    .kanban-board::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-full); }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel--active { display: block; }
+
+    /* Activity sidebar for overview */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    /* Team members grid */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-md);
+    }
+    .team-member {
+      background: var(--color-surface);
+      border: var(--border-width) var(--border-style) var(--color-border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      display: flex; align-items: center; gap: var(--space-md);
+      transition: box-shadow var(--transition-base) var(--easing-default);
+    }
+    .team-member:hover { box-shadow: var(--shadow-md); }
+    .team-member__info { flex: 1; min-width: 0; }
+    .team-member__name { font-size: var(--text-body-size); font-weight: 600; color: var(--color-text-primary); }
+    .team-member__role { font-size: var(--text-small-size); color: var(--color-text-muted); }
+    .team-member__tasks { font-size: var(--text-xs-size); color: var(--color-text-muted); margin-top: var(--space-2xs); }
+
+    /* Dark toggle */
+    .theme-toggle-btn {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none; border-radius: var(--radius-md);
+      cursor: pointer; color: var(--color-text-secondary);
+      transition: all var(--transition-fast) var(--easing-default);
+    }
+    .theme-toggle-btn:hover { background: var(--color-surface-active); color: var(--color-text-primary); }
+    .theme-toggle-btn [data-lucide] { width: 20px; height: 20px; }
+
+    @media (max-width: 1024px) {
+      .overview-grid { grid-template-columns: 1fr; }
+      .kanban-board { padding-right: var(--space-md); }
+      .sidebar-nav { display: none; }
+      .mobile-nav-bar { display: flex; }
+      .main-content { margin-left: 0; margin-top: 56px; }
+    }
+    @media (max-width: 640px) {
+      .page-content { padding: var(--space-md); }
+      .team-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════
+       SIDEBAR NAVIGATION
+       ════════════════════════════════════════════ -->
+  <nav class="sidebar-nav">
+    <div class="sidebar-nav__logo"><i data-lucide="check-square"></i></div>
+    <div class="sidebar-nav__menu">
+      <a class="sidebar-nav__item sidebar-nav__item--active" href="#" aria-label="Dashboard"><i data-lucide="layout-dashboard"></i></a>
+      <a class="sidebar-nav__item" href="#" aria-label="Tasks"><i data-lucide="check-square"></i></a>
+      <a class="sidebar-nav__item" href="#" aria-label="Calendar"><i data-lucide="calendar"></i></a>
+      <a class="sidebar-nav__item" href="#" aria-label="Messages"><i data-lucide="message-square"></i></a>
+      <a class="sidebar-nav__item sidebar-nav__item--has-submenu" href="#" aria-label="Projects">
+        <i data-lucide="folder"></i>
+        <div class="sidebar-nav__flyout">
+          <div class="sidebar-nav__flyout-title">Projects</div>
+          <a class="sidebar-nav__flyout-item sidebar-nav__flyout-item--active" href="#">TaskFlow v2.0</a>
+          <a class="sidebar-nav__flyout-item" href="#">Mobile App</a>
+          <a class="sidebar-nav__flyout-item" href="#">Marketing Site</a>
+          <a class="sidebar-nav__flyout-item" href="#">API Platform</a>
+        </div>
+      </a>
+      <a class="sidebar-nav__item" href="#" aria-label="Team"><i data-lucide="users"></i></a>
+      <a class="sidebar-nav__item" href="#" aria-label="Analytics"><i data-lucide="bar-chart-3"></i></a>
+    </div>
+    <div class="sidebar-nav__footer">
+      <a class="sidebar-nav__item" href="#" aria-label="Settings"><i data-lucide="settings"></i></a>
+      <a class="sidebar-nav__item" href="#" aria-label="Help"><i data-lucide="help-circle"></i></a>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════
+       MOBILE NAV BAR
+       ════════════════════════════════════════════ -->
+  <div class="mobile-nav-bar">
+    <button class="mobile-nav-bar__hamburger" aria-label="Open menu"><i data-lucide="menu"></i></button>
+    <div class="mobile-nav-bar__logo"><i data-lucide="check-square"></i></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       MAIN CONTENT
+       ════════════════════════════════════════════ -->
+  <div class="main-content">
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="top-nav__items">
+        <a class="top-nav__item top-nav__item--active" href="#" data-tab="overview"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
+        <a class="top-nav__item" href="#" data-tab="board"><i data-lucide="columns"></i><span>Board</span></a>
+        <a class="top-nav__item" href="#" data-tab="table"><i data-lucide="table"></i><span>Table</span></a>
+        <a class="top-nav__item" href="#" data-tab="team"><i data-lucide="users"></i><span>Team</span></a>
+      </div>
+      <div class="top-nav__actions">
+        <div class="top-nav__search">
+          <i data-lucide="search"></i>
+          <span class="top-nav__search-text">Search tasks...</span>
+          <span class="top-nav__search-shortcut">&#8984;K</span>
+        </div>
+        <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle dark mode">
+          <i data-lucide="moon" id="themeIcon"></i>
+        </button>
+        <button class="top-nav__icon-btn">
+          <i data-lucide="bell"></i>
+          <span class="top-nav__badge"></span>
+        </button>
+        <img class="top-nav__avatar" src="../assets/avatars/avatar-a01.png" alt="Sarah Chen">
+      </div>
+    </div>
+
+    <!-- Content Tabs (underline) -->
+    <div class="content-tabs">
+      <button class="content-tabs__item content-tabs__item--active" data-tab="overview">Overview</button>
+      <button class="content-tabs__item" data-tab="board">Board</button>
+      <button class="content-tabs__item" data-tab="table">Table</button>
+      <button class="content-tabs__item" data-tab="team">Team</button>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TAB 1: OVERVIEW
+         ════════════════════════════════════════ -->
+    <div class="tab-panel tab-panel--active" id="panel-overview">
+      <div class="page-content">
+
+        <!-- Page Header -->
+        <div class="page-header" style="margin-bottom:var(--space-xl);">
+          <div class="page-header__inner">
+            <div class="page-header__title-row">
+              <div class="page-header__title-group">
+                <h1 class="page-header__title">TaskFlow v2.0</h1>
+                <p class="page-header__subtitle">Sprint 14 — March 24 to April 7, 2026</p>
+                <div class="page-header__meta">
+                  <span class="page-header__meta-item"><i data-lucide="calendar"></i> 5 days remaining</span>
+                  <span class="page-header__meta-item"><i data-lucide="users"></i> 8 members</span>
+                  <span class="page-header__meta-item"><i data-lucide="git-branch"></i> 42 commits</span>
+                </div>
+              </div>
+              <div class="page-header__actions">
+                <button class="btn btn--outlined btn--sm"><i data-lucide="download"></i> Export</button>
+                <button class="btn btn--primary btn--sm"><i data-lucide="plus"></i> New Task</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" style="margin-bottom:var(--space-xl);">
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <span class="stat-card__title">Total Tasks</span>
+              <span class="stat-card__badge" style="background:var(--color-success-light);color:var(--color-success);">
+                <i data-lucide="trending-up" style="width:10px;height:10px;display:inline-block;vertical-align:-1px;margin-right:2px;"></i>12%
+              </span>
+            </div>
+            <div class="stat-card__value stat-card__value--hero">64</div>
+            <div class="stat-card__label">vs 57 last sprint</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <span class="stat-card__title">Completed</span>
+              <span class="tag tag--confirmed" style="font-size:10px;padding:2px 8px;">On Track</span>
+            </div>
+            <div class="stat-card__value">38</div>
+            <div class="progress" style="margin-top:var(--space-sm);">
+              <div class="progress__fill progress__fill--green" style="width:59%"></div>
+            </div>
+            <div class="stat-card__label" style="margin-top:var(--space-xs);">59% of sprint goal</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <span class="stat-card__title">In Progress</span>
+            </div>
+            <div class="stat-card__value">14</div>
+            <div class="stat-card__bars" style="margin-top:var(--space-sm);">
+              <div class="stat-card__bar stat-card__bar--muted" style="height:30%"></div>
+              <div class="stat-card__bar stat-card__bar--primary" style="height:55%"></div>
+              <div class="stat-card__bar stat-card__bar--primary" style="height:80%"></div>
+              <div class="stat-card__bar stat-card__bar--muted" style="height:45%"></div>
+              <div class="stat-card__bar stat-card__bar--primary" style="height:95%"></div>
+              <div class="stat-card__bar stat-card__bar--primary" style="height:70%"></div>
+              <div class="stat-card__bar stat-card__bar--muted" style="height:60%"></div>
+            </div>
+            <div class="stat-card__footer">Mon – Sun</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <span class="stat-card__title">Blocked</span>
+              <span class="stat-card__badge" style="background:var(--color-error-light);color:var(--color-error);">
+                <i data-lucide="trending-up" style="width:10px;height:10px;display:inline-block;vertical-align:-1px;margin-right:2px;"></i>2
+              </span>
+            </div>
+            <div class="stat-card__value">4</div>
+            <div class="stat-card__label">Needs attention</div>
+          </div>
+        </div>
+
+        <!-- Overview Grid: Cards + Activity Feed -->
+        <div class="overview-grid">
+          <div>
+            <!-- Recent Tasks -->
+            <h3 style="font-size:var(--text-h3-size);font-weight:var(--text-h3-weight);color:var(--color-text-primary);margin-bottom:var(--space-md);">Recent Tasks</h3>
+            <div class="cards-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:var(--space-xl);">
+
+              <div class="card card--status-error">
+                <div class="card__body">
+                  <div class="card__header">
+                    <h3 class="card__title">Fix Auth Token Refresh</h3>
+                    <span class="tag tag--alert"><i data-lucide="alert-triangle"></i> Blocked</span>
+                  </div>
+                  <p class="card__subtitle">Session tokens expire silently causing 401 errors on long-running dashboard sessions.</p>
+                  <div class="card__meta"><i data-lucide="clock"></i> Due tomorrow</div>
+                  <div class="card__actions">
+                    <div class="avatar-group">
+                      <div class="avatar avatar--sm avatar--e"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+                      <div class="avatar avatar--sm avatar--b"><img src="../assets/avatars/avatar-b12.png" alt=""></div>
+                    </div>
+                    <button class="btn btn--soft-error btn--tiny">Unblock</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card card--status-confirmed">
+                <div class="card__body">
+                  <div class="card__header">
+                    <h3 class="card__title">User Dashboard Redesign</h3>
+                    <span class="tag tag--confirmed"><i data-lucide="check"></i> Done</span>
+                  </div>
+                  <p class="card__subtitle">New analytics widgets with real-time data, donut charts, and export functionality.</p>
+                  <div class="card__meta"><i data-lucide="check-circle"></i> Completed 2h ago</div>
+                  <div class="card__actions">
+                    <div class="avatar-group">
+                      <div class="avatar avatar--sm avatar--c"><img src="../assets/avatars/avatar-a15.png" alt=""></div>
+                    </div>
+                    <button class="btn btn--text btn--tiny">View PR</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card card--status-pending">
+                <div class="card__body">
+                  <div class="card__header">
+                    <h3 class="card__title">API Rate Limiter</h3>
+                    <span class="tag tag--pending"><i data-lucide="clock"></i> In Review</span>
+                  </div>
+                  <p class="card__subtitle">Implement sliding window rate limiting with Redis backend for public endpoints.</p>
+                  <div class="card__meta"><i data-lucide="git-pull-request"></i> PR #247 open</div>
+                  <div class="card__actions">
+                    <div class="avatar-group">
+                      <div class="avatar avatar--sm avatar--a"><img src="../assets/avatars/avatar-b05.png" alt=""></div>
+                      <div class="avatar avatar--sm avatar--d"><img src="../assets/avatars/avatar-a08.png" alt=""></div>
+                    </div>
+                    <button class="btn btn--soft-primary btn--tiny">Review</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card__body">
+                  <div class="card__header">
+                    <h3 class="card__title">Dark Mode Toggle</h3>
+                    <span class="tag tag--info"><i data-lucide="moon"></i> Feature</span>
+                  </div>
+                  <p class="card__subtitle">Theme switching with smooth CSS transitions and system preference detection.</p>
+                  <div class="card__meta"><i data-lucide="code"></i> 3 subtasks remaining</div>
+                  <div class="card__actions">
+                    <div class="avatar-group">
+                      <div class="avatar avatar--sm avatar--b"><img src="../assets/avatars/avatar-a22.png" alt=""></div>
+                    </div>
+                    <button class="btn btn--text btn--tiny">Open</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schedule Card -->
+            <div class="day-card">
+              <div class="day-card__header">
+                <div class="day-card__date-wrapper">
+                  <div class="day-card__date-icon"><i data-lucide="calendar"></i></div>
+                  <h2 class="day-card__date">Today, April 3</h2>
+                </div>
+                <button class="day-card__more" aria-label="More options"><i data-lucide="more-horizontal"></i></button>
+              </div>
+              <div class="day-card__section">
+                <div class="section-header section-header--important">
+                  <span class="section-header__label">Important (1)</span>
+                  <i data-lucide="alert-circle" class="section-header__icon"></i>
+                </div>
+                <div class="event-row">
+                  <div class="event-row__left">
+                    <img class="event-row__avatar" src="../assets/avatars/avatar-b12.png" alt="Kai">
+                    <div>
+                      <span class="event-row__name">Sprint 14 Deadline</span>
+                      <div class="event-row__desc">4 blocked tasks need resolution before Friday</div>
+                    </div>
+                  </div>
+                  <span class="event-badge event-badge--vacation"><i data-lucide="flag"></i> Deadline</span>
+                </div>
+              </div>
+              <div class="day-card__section">
+                <div class="section-header section-header--meetings">
+                  <span class="section-header__label">Meetings (3)</span>
+                  <i data-lucide="video" class="section-header__icon"></i>
+                </div>
+                <div class="meeting-item">
+                  <div class="meeting-item__title">Daily Standup</div>
+                  <div class="meeting-item__time">9:00 am <span class="meeting-item__sep">&mdash;</span> 9:15 am</div>
+                </div>
+                <div class="meeting-item">
+                  <div class="meeting-item__title">Sprint Planning &mdash; v2.1 Scope</div>
+                  <div class="meeting-item__time">11:00 am <span class="meeting-item__sep">&mdash;</span> 12:00 pm</div>
+                </div>
+                <div class="meeting-item">
+                  <div class="meeting-item__title">Design Review &mdash; Onboarding Flow</div>
+                  <div class="meeting-item__time">3:00 pm <span class="meeting-item__sep">&mdash;</span> 4:00 pm</div>
+                </div>
+              </div>
+              <div class="day-card__section">
+                <div class="section-header section-header--absences">
+                  <span class="section-header__label">Out Today (3)</span>
+                  <i data-lucide="calendar-x" class="section-header__icon"></i>
+                </div>
+                <div class="absence-row">
+                  <div class="absence-row__left">
+                    <div class="avatar-group">
+                      <img class="avatar-group__item" src="../assets/avatars/avatar-b03.png" alt="" style="width:36px;height:36px;border-radius:9999px;border:2px solid var(--color-surface);object-fit:cover;">
+                      <img class="avatar-group__item" src="../assets/avatars/avatar-a08.png" alt="" style="width:36px;height:36px;border-radius:9999px;border:2px solid var(--color-surface);margin-left:-8px;object-fit:cover;">
+                      <span class="avatar-group__initials avatar-group__initials--orange" style="margin-left:-8px;">TP</span>
+                    </div>
+                  </div>
+                  <span class="event-badge event-badge--holiday"><i data-lucide="palm-tree"></i> PTO</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity Feed Sidebar -->
+          <div>
+            <div class="activity-feed" style="margin-bottom:var(--space-lg);">
+              <div class="activity-feed__header">
+                <h3 class="activity-feed__title">Activity</h3>
+                <button class="btn btn--text btn--tiny">View all</button>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm avatar--e"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Sarah Chen</strong> closed <strong>API Pagination</strong></div>
+                  <div class="activity-item__time">5 minutes ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm avatar--b"><img src="../assets/avatars/avatar-b05.png" alt=""></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Marcus Rivera</strong> commented on <strong>Auth Token Fix</strong></div>
+                  <div class="activity-item__time">22 minutes ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm avatar--c"><img src="../assets/avatars/avatar-a15.png" alt=""></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Nadia Osei</strong> moved <strong>Dashboard Redesign</strong> to Done</div>
+                  <div class="activity-item__time">2 hours ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm avatar--d"><img src="../assets/avatars/avatar-a08.png" alt=""></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Liam Park</strong> created <strong>Webhook Retry Logic</strong></div>
+                  <div class="activity-item__time">3 hours ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm avatar--a"><img src="../assets/avatars/avatar-a22.png" alt=""></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Amir Hassan</strong> opened PR #248 for <strong>Dark Mode</strong></div>
+                  <div class="activity-item__time">4 hours ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm avatar--f"><img src="../assets/avatars/avatar-b12.png" alt=""></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Kai Nakamura</strong> assigned <strong>Rate Limiter</strong> to Marcus</div>
+                  <div class="activity-item__time">5 hours ago</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sprint Breakdown Donut -->
+            <div class="stat-card">
+              <div class="stat-card__header">
+                <span class="stat-card__title">Sprint Breakdown</span>
+              </div>
+              <div class="stat-card__donut" style="margin-top:var(--space-xs);">
+                <svg viewBox="0 0 36 36" style="width:80px;height:80px;flex-shrink:0;transform:rotate(-90deg);">
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-border-light)" stroke-width="3"></circle>
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-dasharray="57 97.4" stroke-linecap="round"></circle>
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-secondary)" stroke-width="3" stroke-dasharray="21 97.4" stroke-dashoffset="-57" stroke-linecap="round"></circle>
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-warning)" stroke-width="3" stroke-dasharray="12 97.4" stroke-dashoffset="-78" stroke-linecap="round"></circle>
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-error)" stroke-width="3" stroke-dasharray="6 97.4" stroke-dashoffset="-90" stroke-linecap="round"></circle>
+                </svg>
+                <div class="stat-card__donut-legend">
+                  <div class="stat-card__legend-item"><span class="stat-card__legend-dot" style="background:var(--color-success);"></span> Done — 38</div>
+                  <div class="stat-card__legend-item"><span class="stat-card__legend-dot" style="background:var(--color-secondary);"></span> In Progress — 14</div>
+                  <div class="stat-card__legend-item"><span class="stat-card__legend-dot" style="background:var(--color-warning);"></span> Backlog — 8</div>
+                  <div class="stat-card__legend-item"><span class="stat-card__legend-dot" style="background:var(--color-error);"></span> Blocked — 4</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TAB 2: BOARD (Kanban)
+         ════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-board">
+      <div class="page-content">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" style="margin-bottom:var(--space-xl);">
+          <div class="filter-bar__top">
+            <h1 class="filter-bar__title">Task Board</h1>
+            <div class="view-toggle">
+              <button class="view-toggle__item view-toggle__item--active"><i data-lucide="columns"></i> <span>Board</span></button>
+              <button class="view-toggle__item"><i data-lucide="list"></i> <span>List</span></button>
+            </div>
+          </div>
+          <div class="filter-bar__bottom">
+            <div class="filter-bar__search-wrap">
+              <span class="filter-bar__search-icon"><i data-lucide="search"></i></span>
+              <input class="filter-bar__search-input" type="text" placeholder="Search tasks...">
+            </div>
+            <button class="filter-bar__filter-btn filter-bar__filter-btn--active">
+              <i data-lucide="sliders-horizontal"></i> Filters <span class="filter-bar__badge">2</span>
+            </button>
+            <div class="filter-bar__divider"></div>
+            <button class="filter-bar__sort-btn"><i data-lucide="arrow-up-down"></i> Priority</button>
+          </div>
+          <div class="filter-bar__active-filters">
+            <span class="filter-bar__active-label">Active:</span>
+            <span class="filter-bar__active-tag filter-bar__active-tag--category">Sprint 14 <button class="filter-bar__tag-remove"><i data-lucide="x"></i></button></span>
+            <span class="filter-bar__active-tag filter-bar__active-tag--status">Assigned <button class="filter-bar__tag-remove"><i data-lucide="x"></i></button></span>
+            <button class="filter-bar__clear-all">Clear all</button>
+          </div>
+        </div>
+
+        <!-- 4-Column Kanban Board -->
+        <div class="kanban-board">
+
+          <!-- Column 1: Backlog -->
+          <div class="task-list">
+            <div class="task-list__header">
+              <div class="task-list__header-left">
+                <span class="task-list__indicator" style="background:var(--color-warning);"></span>
+                <h3 class="task-list__title">Backlog</h3>
+              </div>
+              <div class="task-list__header-actions">
+                <button class="task-list__action" aria-label="Add task"><i data-lucide="plus"></i></button>
+                <button class="task-list__action" aria-label="More"><i data-lucide="more-horizontal"></i></button>
+              </div>
+            </div>
+            <div class="task-list__meta">
+              <span class="task-list__count">8 Tasks</span>
+              <span class="task-list__updated">Updated 1h ago</span>
+            </div>
+            <div class="task-list__cards">
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--medium"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--medium">MEDIUM PRIORITY</span>
+                  <h4 class="task-card__title">Webhook Retry Logic</h4>
+                  <p class="task-card__desc">Implement exponential backoff for failed webhook deliveries with configurable max retries.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a08.png" alt="">
+                    </div>
+                    <span class="tag tag--neutral">Planned</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 3</span>
+                    <span class="task-card__stat"><i data-lucide="paperclip"></i> 1</span>
+                  </div>
+                  <span class="task-card__date">05/04/2026</span>
+                </div>
+              </article>
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--low"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--low">LOW PRIORITY</span>
+                  <h4 class="task-card__title">Update Onboarding Flow</h4>
+                  <p class="task-card__desc">Simplify the 5-step wizard into a 3-step progressive form with inline validation.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a22.png" alt="">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-b03.png" alt="">
+                    </div>
+                    <span class="tag tag--neutral">Pending</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 5</span>
+                    <span class="task-card__stat"><i data-lucide="copy"></i> 4</span>
+                  </div>
+                  <span class="task-card__date">10/04/2026</span>
+                </div>
+              </article>
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--info"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--info">RESEARCH</span>
+                  <h4 class="task-card__title">Evaluate Edge Functions</h4>
+                  <p class="task-card__desc">Benchmark Cloudflare Workers vs Vercel Edge for API gateway migration.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-b05.png" alt="">
+                    </div>
+                    <span class="tag tag--neutral">Research</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 8</span>
+                    <span class="task-card__stat"><i data-lucide="paperclip"></i> 2</span>
+                  </div>
+                  <span class="task-card__date">12/04/2026</span>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Column 2: In Progress -->
+          <div class="task-list">
+            <div class="task-list__header">
+              <div class="task-list__header-left">
+                <span class="task-list__indicator"></span>
+                <h3 class="task-list__title">In Progress</h3>
+              </div>
+              <div class="task-list__header-actions">
+                <button class="task-list__action" aria-label="Add task"><i data-lucide="plus"></i></button>
+                <button class="task-list__action" aria-label="More"><i data-lucide="more-horizontal"></i></button>
+              </div>
+            </div>
+            <div class="task-list__meta">
+              <span class="task-list__count">14 Tasks</span>
+              <span class="task-list__updated">Updated 25m ago</span>
+            </div>
+            <div class="task-list__cards">
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--urgent"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--urgent">URGENT</span>
+                  <h4 class="task-card__title">Fix Auth Token Refresh</h4>
+                  <p class="task-card__desc">Session tokens expire silently causing 401 errors on long-running sessions.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a03.png" alt="">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-b12.png" alt="">
+                    </div>
+                    <span class="tag tag--alert">Blocked</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 12</span>
+                    <span class="task-card__stat"><i data-lucide="paperclip"></i> 3</span>
+                    <span class="task-card__stat"><i data-lucide="copy"></i> 5</span>
+                  </div>
+                  <span class="task-card__date">04/04/2026</span>
+                </div>
+              </article>
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--high"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--high">HIGH PRIORITY</span>
+                  <h4 class="task-card__title">API Rate Limiter</h4>
+                  <p class="task-card__desc">Sliding window rate limiting with Redis backend for public API endpoints.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-b05.png" alt="">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a08.png" alt="">
+                    </div>
+                    <span class="tag tag--pending">In Review</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 7</span>
+                    <span class="task-card__stat"><i data-lucide="paperclip"></i> 2</span>
+                  </div>
+                  <span class="task-card__date">05/04/2026</span>
+                </div>
+              </article>
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--info"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--info">FEATURE</span>
+                  <h4 class="task-card__title">Dark Mode Toggle</h4>
+                  <p class="task-card__desc">Theme switching with smooth CSS transitions and system preference detection.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a22.png" alt="">
+                    </div>
+                    <span class="tag tag--confirmed">In Review</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 5</span>
+                    <span class="task-card__stat"><i data-lucide="copy"></i> 3</span>
+                  </div>
+                  <span class="task-card__date">06/04/2026</span>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Column 3: In Review -->
+          <div class="task-list">
+            <div class="task-list__header">
+              <div class="task-list__header-left">
+                <span class="task-list__indicator" style="background:var(--color-accent);"></span>
+                <h3 class="task-list__title">In Review</h3>
+              </div>
+              <div class="task-list__header-actions">
+                <button class="task-list__action" aria-label="Add task"><i data-lucide="plus"></i></button>
+                <button class="task-list__action" aria-label="More"><i data-lucide="more-horizontal"></i></button>
+              </div>
+            </div>
+            <div class="task-list__meta">
+              <span class="task-list__count">4 Tasks</span>
+              <span class="task-list__updated">Updated 10m ago</span>
+            </div>
+            <div class="task-list__cards">
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--high"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--high">HIGH PRIORITY</span>
+                  <h4 class="task-card__title">Search Indexing Pipeline</h4>
+                  <p class="task-card__desc">Elasticsearch reindex job with zero-downtime swap using index aliases.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-b12.png" alt="">
+                    </div>
+                    <span class="tag tag--pending">Awaiting</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 9</span>
+                    <span class="task-card__stat"><i data-lucide="paperclip"></i> 4</span>
+                  </div>
+                  <span class="task-card__date">03/04/2026</span>
+                </div>
+              </article>
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--medium"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--medium">MEDIUM PRIORITY</span>
+                  <h4 class="task-card__title">Email Template Engine</h4>
+                  <p class="task-card__desc">MJML-based responsive email templates with variable interpolation and preview.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a15.png" alt="">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a03.png" alt="">
+                    </div>
+                    <span class="tag tag--confirmed">Approved</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 4</span>
+                    <span class="task-card__stat"><i data-lucide="copy"></i> 7</span>
+                  </div>
+                  <span class="task-card__date">04/04/2026</span>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Column 4: Done -->
+          <div class="task-list">
+            <div class="task-list__header">
+              <div class="task-list__header-left">
+                <span class="task-list__indicator" style="background:var(--color-success);"></span>
+                <h3 class="task-list__title">Done</h3>
+              </div>
+              <div class="task-list__header-actions">
+                <button class="task-list__action" aria-label="More"><i data-lucide="more-horizontal"></i></button>
+              </div>
+            </div>
+            <div class="task-list__meta">
+              <span class="task-list__count">38 Tasks</span>
+              <span class="task-list__updated">Updated just now</span>
+            </div>
+            <div class="task-list__cards">
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--low"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--low">COMPLETED</span>
+                  <h4 class="task-card__title">User Dashboard Redesign</h4>
+                  <p class="task-card__desc">New analytics widgets with real-time data, donut charts, and export functionality.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a15.png" alt="">
+                    </div>
+                    <span class="tag tag--confirmed">Done</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 14</span>
+                    <span class="task-card__stat"><i data-lucide="paperclip"></i> 6</span>
+                    <span class="task-card__stat"><i data-lucide="copy"></i> 8</span>
+                  </div>
+                  <span class="task-card__date">02/04/2026</span>
+                </div>
+              </article>
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--low"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--low">COMPLETED</span>
+                  <h4 class="task-card__title">API Pagination v2</h4>
+                  <p class="task-card__desc">Cursor-based pagination for all list endpoints with backward compatibility.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a03.png" alt="">
+                    </div>
+                    <span class="tag tag--confirmed">Done</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 6</span>
+                    <span class="task-card__stat"><i data-lucide="paperclip"></i> 2</span>
+                  </div>
+                  <span class="task-card__date">01/04/2026</span>
+                </div>
+              </article>
+              <article class="task-card">
+                <div class="task-card__color-bar task-card__color-bar--low"></div>
+                <div class="task-card__body">
+                  <span class="task-card__category task-card__category--low">COMPLETED</span>
+                  <h4 class="task-card__title">CI Pipeline Optimization</h4>
+                  <p class="task-card__desc">Reduced build times from 12min to 4min with parallel test runners and caching.</p>
+                  <div class="task-card__assignees-row">
+                    <div class="avatar-stack">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-b05.png" alt="">
+                      <img class="avatar-stack__img" src="../assets/avatars/avatar-a08.png" alt="">
+                    </div>
+                    <span class="tag tag--confirmed">Done</span>
+                  </div>
+                </div>
+                <div class="task-card__footer">
+                  <div class="task-card__stats">
+                    <span class="task-card__stat"><i data-lucide="message-square"></i> 11</span>
+                    <span class="task-card__stat"><i data-lucide="copy"></i> 9</span>
+                  </div>
+                  <span class="task-card__date">30/03/2026</span>
+                </div>
+              </article>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TAB 3: TABLE
+         ════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-table">
+      <div class="page-content">
+        <div class="table-container">
+          <div class="table-container__header">
+            <h3 class="table-container__title">All Tasks</h3>
+            <div style="display:flex;gap:var(--space-sm);">
+              <button class="btn btn--outlined btn--sm"><i data-lucide="download"></i> Export CSV</button>
+              <button class="btn btn--primary btn--sm"><i data-lucide="plus"></i> New Task</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Assignee</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">Fix Auth Token Refresh</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-241 &middot; Authentication</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--e"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Sarah Chen</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--alert"><i data-lucide="alert-triangle"></i> Urgent</span></td>
+                <td><span class="tag tag--alert">Blocked</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Apr 4, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">Edit</button>
+                  <button class="btn btn--text-error btn--tiny">Archive</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">API Rate Limiter</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-247 &middot; Backend</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--b"><img src="../assets/avatars/avatar-b05.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Marcus Rivera</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--alert"><i data-lucide="arrow-up"></i> High</span></td>
+                <td><span class="tag tag--pending">In Review</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Apr 5, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">Edit</button>
+                  <button class="btn btn--text-error btn--tiny">Archive</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">Dark Mode Toggle</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-248 &middot; Frontend</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--a"><img src="../assets/avatars/avatar-a22.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Amir Hassan</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--info"><i data-lucide="minus"></i> Medium</span></td>
+                <td><span class="tag tag--confirmed">In Review</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Apr 6, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">Edit</button>
+                  <button class="btn btn--text-error btn--tiny">Archive</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">Search Indexing Pipeline</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-239 &middot; Search</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--f"><img src="../assets/avatars/avatar-b12.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Kai Nakamura</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--alert"><i data-lucide="arrow-up"></i> High</span></td>
+                <td><span class="tag tag--pending">Awaiting</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Apr 3, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">Edit</button>
+                  <button class="btn btn--text-error btn--tiny">Archive</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">Email Template Engine</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-235 &middot; Communications</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--c"><img src="../assets/avatars/avatar-a15.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Nadia Osei</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--pending"><i data-lucide="minus"></i> Medium</span></td>
+                <td><span class="tag tag--confirmed">Approved</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Apr 4, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">Edit</button>
+                  <button class="btn btn--text-error btn--tiny">Archive</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">User Dashboard Redesign</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-228 &middot; Frontend</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--c"><img src="../assets/avatars/avatar-a15.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Nadia Osei</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--confirmed"><i data-lucide="minus"></i> Low</span></td>
+                <td><span class="tag tag--confirmed">Done</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Apr 2, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">View</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">Webhook Retry Logic</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-250 &middot; Backend</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--d"><img src="../assets/avatars/avatar-a08.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Liam Park</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--pending"><i data-lucide="minus"></i> Medium</span></td>
+                <td><span class="tag tag--neutral">Planned</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Apr 5, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">Edit</button>
+                  <button class="btn btn--text-error btn--tiny">Archive</button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="display:flex;flex-direction:column;">
+                    <span style="font-weight:600;color:var(--color-text-primary);">CI Pipeline Optimization</span>
+                    <span style="font-size:var(--text-xs-size);color:var(--color-text-muted);">TF-220 &middot; DevOps</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="table-cell-user">
+                    <div class="avatar avatar--sm avatar--b"><img src="../assets/avatars/avatar-b05.png" alt=""></div>
+                    <div class="table-cell-user__info">
+                      <span class="table-cell-user__name">Marcus Rivera</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="tag tag--confirmed"><i data-lucide="minus"></i> Low</span></td>
+                <td><span class="tag tag--confirmed">Done</span></td>
+                <td style="font-size:var(--text-small-size);color:var(--color-text-muted);">Mar 30, 2026</td>
+                <td class="table-cell-actions">
+                  <button class="btn btn--text btn--tiny">View</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:var(--space-lg);">
+          <span style="font-size:var(--text-small-size);color:var(--color-text-muted);">Showing 1–8 of 64 tasks</span>
+          <div class="pagination">
+            <button class="pagination__btn"><i data-lucide="chevron-left"></i> <span class="pagination__btn-text">Previous</span></button>
+            <a class="pagination__item pagination__item--active" href="#">1</a>
+            <a class="pagination__item" href="#">2</a>
+            <a class="pagination__item" href="#">3</a>
+            <span class="pagination__ellipsis">&hellip;</span>
+            <a class="pagination__item" href="#">8</a>
+            <button class="pagination__btn"><span class="pagination__btn-text">Next</span> <i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         TAB 4: TEAM
+         ════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-team">
+      <div class="page-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-xl);">
+          <div>
+            <h2 style="font-size:var(--text-hero-size);font-weight:var(--text-hero-weight);color:var(--color-text-primary);margin-bottom:var(--space-2xs);">Team</h2>
+            <p style="font-size:var(--text-body-size);color:var(--color-text-secondary);">8 members assigned to Sprint 14</p>
+          </div>
+          <button class="btn btn--primary btn--sm"><i data-lucide="user-plus"></i> Invite Member</button>
+        </div>
+
+        <div class="team-grid">
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--e"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Sarah Chen</div>
+              <div class="team-member__role">Engineering Lead</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">8 done</span> &middot; 3 in progress &middot; 1 blocked</div>
+            </div>
+            <span class="tag tag--active" style="font-size:11px;">Online</span>
+          </div>
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--b"><img src="../assets/avatars/avatar-b05.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Marcus Rivera</div>
+              <div class="team-member__role">Senior Backend Engineer</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">6 done</span> &middot; 2 in progress</div>
+            </div>
+            <span class="tag tag--active" style="font-size:11px;">Online</span>
+          </div>
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--c"><img src="../assets/avatars/avatar-a15.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Nadia Osei</div>
+              <div class="team-member__role">Product Designer</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">7 done</span> &middot; 2 in progress</div>
+            </div>
+            <span class="tag tag--active" style="font-size:11px;">Online</span>
+          </div>
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--d"><img src="../assets/avatars/avatar-a08.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Liam Park</div>
+              <div class="team-member__role">Backend Engineer</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">5 done</span> &middot; 2 in progress</div>
+            </div>
+            <span class="tag tag--pending" style="font-size:11px;">Away</span>
+          </div>
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--a"><img src="../assets/avatars/avatar-a22.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Amir Hassan</div>
+              <div class="team-member__role">Frontend Engineer</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">4 done</span> &middot; 2 in progress</div>
+            </div>
+            <span class="tag tag--active" style="font-size:11px;">Online</span>
+          </div>
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--f"><img src="../assets/avatars/avatar-b12.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Kai Nakamura</div>
+              <div class="team-member__role">Full-Stack Engineer</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">5 done</span> &middot; 1 in progress &middot; 1 review</div>
+            </div>
+            <span class="tag tag--active" style="font-size:11px;">Online</span>
+          </div>
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--e"><img src="../assets/avatars/avatar-b03.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Priya Sharma</div>
+              <div class="team-member__role">QA Engineer</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">2 done</span> &middot; 1 in progress</div>
+            </div>
+            <span class="tag tag--pending" style="font-size:11px;">Away</span>
+          </div>
+          <div class="team-member">
+            <div class="avatar avatar--lg avatar--c"><img src="../assets/avatars/avatar-a01.png" alt=""></div>
+            <div class="team-member__info">
+              <div class="team-member__name">Elena Volkov</div>
+              <div class="team-member__role">DevOps Engineer</div>
+              <div class="team-member__tasks"><span style="color:var(--color-success);font-weight:600;">1 done</span> &middot; 1 in progress</div>
+            </div>
+            <span class="tag tag--active" style="font-size:11px;">Online</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Tab switching
+    function switchTab(tabId) {
+      // Update content tabs (underline)
+      document.querySelectorAll('.content-tabs__item').forEach(btn => {
+        btn.classList.toggle('content-tabs__item--active', btn.getAttribute('data-tab') === tabId);
+      });
+      // Update top nav items
+      document.querySelectorAll('.top-nav__item[data-tab]').forEach(item => {
+        item.classList.toggle('top-nav__item--active', item.getAttribute('data-tab') === tabId);
+      });
+      // Show/hide panels
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('tab-panel--active', panel.id === 'panel-' + tabId);
+      });
+    }
+
+    document.querySelectorAll('.content-tabs__item[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+    });
+    document.querySelectorAll('.top-nav__item[data-tab]').forEach(item => {
+      item.addEventListener('click', (e) => { e.preventDefault(); switchTab(item.getAttribute('data-tab')); });
+    });
+
+    // Dark mode toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function setTheme(dark) {
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+      themeIcon.setAttribute('data-lucide', dark ? 'sun' : 'moon');
+      lucide.createIcons();
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      setTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
+    });
+
+    if (localStorage.getItem('theme') === 'dark') setTheme(true);
+  </script>
+</body>
+</html>

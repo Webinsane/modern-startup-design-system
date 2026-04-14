@@ -1,0 +1,2856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Startup App — Design System</title>
+  <link rel="stylesheet" href="../tokens/tokens.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ============================================
+       DESIGN SYSTEM SHOWCASE — page layout only
+       All component styles from components.css
+       ============================================ */
+
+    /* --- Page shell --- */
+    .ds-header {
+      position: sticky; top: 0; z-index: var(--z-sticky);
+      background: var(--color-surface);
+      border-bottom: var(--border-width) var(--border-style) var(--color-border-light);
+    }
+    .ds-header__bar {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1280px; margin: 0 auto;
+      padding: var(--space-md) var(--space-xl);
+    }
+    .ds-header__left {
+      display: flex; align-items: center; gap: var(--space-sm);
+    }
+    .ds-header__logo {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      background: var(--color-black); color: var(--color-white);
+      display: flex; align-items: center; justify-content: center;
+    }
+    [data-theme="dark"] .ds-header__logo {
+      background: var(--color-white); color: var(--color-black);
+    }
+    .ds-header__logo [data-lucide] { width: 18px; height: 18px; }
+    .ds-header__title {
+      font-size: var(--text-h3-size); font-weight: 800;
+      color: var(--color-text-primary); letter-spacing: -0.02em;
+    }
+    .ds-header__version {
+      font-size: 11px; font-weight: 600;
+      background: var(--color-surface-alt); color: var(--color-text-muted);
+      padding: 2px 8px; border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+    }
+    .ds-header__right {
+      display: flex; align-items: center; gap: var(--space-xs);
+    }
+
+    /* --- MEGA TAB SWITCH — the star --- */
+    .ds-tabs {
+      position: sticky; top: 57px; z-index: calc(var(--z-sticky) - 1);
+      background: var(--color-surface);
+      border-bottom: var(--border-width) var(--border-style) var(--color-border-light);
+    }
+    .ds-tabs__inner {
+      max-width: 1280px; margin: 0 auto;
+      padding: 0 var(--space-xl);
+      display: flex; align-items: center; gap: var(--space-xs);
+    }
+    .ds-tabs__btn {
+      display: flex; align-items: center; gap: var(--space-xs);
+      padding: var(--space-md) var(--space-xl);
+      font-family: var(--font-body);
+      font-size: var(--text-h3-size); font-weight: 700;
+      color: var(--color-text-muted);
+      background: transparent; border: none;
+      cursor: pointer;
+      position: relative;
+      transition: color var(--transition-fast) var(--easing-default);
+      white-space: nowrap;
+    }
+    .ds-tabs__btn:hover { color: var(--color-text-primary); }
+    .ds-tabs__btn [data-lucide] { width: 20px; height: 20px; }
+    .ds-tabs__btn--active {
+      color: var(--color-text-primary);
+    }
+    .ds-tabs__btn--active::after {
+      content: '';
+      position: absolute; bottom: -1px; left: var(--space-xl); right: var(--space-xl);
+      height: 3px; border-radius: 3px 3px 0 0;
+      background: var(--color-primary);
+    }
+    .ds-tabs__count {
+      font-size: 11px; font-weight: 700;
+      background: var(--color-surface-alt); color: var(--color-text-muted);
+      padding: 1px 8px; border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+    }
+    .ds-tabs__btn--active .ds-tabs__count {
+      background: var(--color-primary); color: var(--color-text-inverse);
+    }
+    [data-theme="dark"] .ds-tabs__btn--active .ds-tabs__count {
+      background: var(--color-grey-700); color: var(--color-white);
+    }
+
+    /* --- Tab panels --- */
+    .ds-panel { display: none; }
+    .ds-panel--active { display: block; }
+
+    /* --- Main content --- */
+    .ds-main {
+      max-width: 1280px; margin: 0 auto;
+      padding: var(--space-2xl) var(--space-xl) var(--space-3xl);
+    }
+
+    /* --- Components tab: sidebar TOC + content --- */
+    .ds-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    .ds-toc {
+      position: sticky; top: 120px;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
+      padding-right: var(--space-md);
+    }
+    .ds-toc__group {
+      margin-bottom: var(--space-md);
+    }
+    .ds-toc__heading {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+      padding: var(--space-2xs) 0;
+      margin-bottom: var(--space-2xs);
+    }
+    .ds-toc__link {
+      display: block;
+      font-size: var(--text-small-size); font-weight: 500;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      padding: 3px 0 3px var(--space-sm);
+      border-left: 2px solid transparent;
+      transition: all var(--transition-fast) var(--easing-default);
+      line-height: 1.6;
+    }
+    .ds-toc__link:hover {
+      color: var(--color-text-primary);
+      border-left-color: var(--color-border);
+    }
+    .ds-toc__link--active {
+      color: var(--color-text-primary); font-weight: 600;
+      border-left-color: var(--color-primary);
+    }
+
+    /* --- Section styling --- */
+    .ds-section {
+      margin-bottom: var(--space-3xl);
+      scroll-margin-top: 130px;
+    }
+    .ds-section__title {
+      font-size: var(--text-h1-size); font-weight: 800;
+      color: var(--color-text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-2xs);
+    }
+    .ds-section__desc {
+      font-size: var(--text-body-size); color: var(--color-text-secondary);
+      margin-bottom: var(--space-xl); max-width: 640px; line-height: 1.6;
+    }
+    .ds-section__subtitle {
+      font-size: var(--text-h4-size); font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .ds-divider {
+      border: none;
+      border-top: var(--border-width) var(--border-style) var(--color-border-light);
+      margin: var(--space-3xl) 0;
+    }
+
+    /* --- Token grids --- */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-sm);
+    }
+    .token-card {
+      display: flex; align-items: center; gap: var(--space-sm);
+      padding: var(--space-sm);
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      border: var(--border-width) var(--border-style) var(--color-border-light);
+    }
+    .token-swatch {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border-light);
+      flex-shrink: 0;
+    }
+    .token-card__info { min-width: 0; }
+    .token-card__name {
+      font-size: var(--text-xs-size); font-weight: 600;
+      color: var(--color-text-primary);
+      font-family: var(--font-mono);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .token-card__value {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Brand slot group */
+    .brand-group {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    .brand-swatch {
+      border-radius: var(--radius-md); padding: var(--space-lg) var(--space-md) var(--space-sm);
+      min-height: 80px; display: flex; flex-direction: column; justify-content: flex-end;
+      border: 1px solid var(--color-border-light);
+    }
+    .brand-swatch__label {
+      font-size: 11px; font-weight: 600; font-family: var(--font-mono);
+      opacity: 0.9;
+    }
+    .brand-swatch__value {
+      font-size: 10px; font-family: var(--font-mono); opacity: 0.7;
+    }
+
+    /* Semantic token table */
+    .sem-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg); overflow: hidden;
+      border: var(--border-width) var(--border-style) var(--color-border-light);
+    }
+    .sem-table th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      color: var(--color-text-muted); text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: var(--border-width) var(--border-style) var(--color-border);
+      background: var(--color-bg);
+    }
+    .sem-table td {
+      padding: var(--space-xs) var(--space-md);
+      font-size: var(--text-small-size);
+      border-bottom: var(--border-width) var(--border-style) var(--color-border-light);
+      vertical-align: middle;
+    }
+    .sem-table tr:last-child td { border-bottom: none; }
+    .sem-table code {
+      font-family: var(--font-mono); font-size: var(--text-xs-size);
+      color: var(--color-text-primary); font-weight: 500;
+    }
+    .sem-dot {
+      width: 20px; height: 20px; border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border-light);
+      display: inline-block; vertical-align: middle;
+    }
+
+    /* Typography samples */
+    .type-sample {
+      display: flex; align-items: baseline; gap: var(--space-xl);
+      padding: var(--space-md) 0;
+      border-bottom: var(--border-width) var(--border-style) var(--color-border-light);
+    }
+    .type-sample:last-child { border-bottom: none; }
+    .type-sample__text { flex: 1; min-width: 0; color: var(--color-text-primary); }
+    .type-sample__meta {
+      flex-shrink: 0; width: 220px;
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--color-text-muted); line-height: 1.7;
+    }
+
+    /* Spacing bars */
+    .spacing-row {
+      display: flex; align-items: center; gap: var(--space-md);
+      padding: var(--space-2xs) 0;
+    }
+    .spacing-label {
+      font-family: var(--font-mono); font-size: var(--text-small-size);
+      color: var(--color-text-primary); width: 100px; flex-shrink: 0;
+    }
+    .spacing-bar {
+      height: 20px; border-radius: var(--radius-xs);
+      background: var(--color-secondary-light);
+      border: 1px solid var(--color-secondary);
+    }
+    .spacing-value {
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--color-text-muted); width: 60px; flex-shrink: 0;
+    }
+
+    /* Shadow demos */
+    .shadow-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--space-lg);
+    }
+    .shadow-demo {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl) var(--space-md);
+      text-align: center;
+    }
+    .shadow-demo__name {
+      font-family: var(--font-mono); font-size: var(--text-small-size);
+      font-weight: 600; color: var(--color-text-primary);
+    }
+
+    /* Radius demos */
+    .radius-grid { display: flex; flex-wrap: wrap; gap: var(--space-lg); }
+    .radius-demo { text-align: center; }
+    .radius-demo__box {
+      width: 56px; height: 56px;
+      background: var(--color-secondary-light);
+      border: 2px solid var(--color-secondary);
+      margin-bottom: var(--space-xs);
+    }
+    .radius-demo__name {
+      font-family: var(--font-mono); font-size: 11px;
+      font-weight: 600; color: var(--color-text-primary);
+    }
+    .radius-demo__value {
+      font-family: var(--font-mono); font-size: 10px;
+      color: var(--color-text-muted);
+    }
+
+    /* --- Component showcase helpers --- */
+    .comp-row {
+      display: flex; flex-wrap: wrap; gap: var(--space-sm);
+      align-items: center; margin-bottom: var(--space-md);
+    }
+    .comp-label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-xs); margin-top: var(--space-lg);
+    }
+    .comp-label:first-child { margin-top: 0; }
+    .comp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .comp-grid--2 { grid-template-columns: 1fr 1fr; }
+    .comp-grid--3 { grid-template-columns: repeat(3, 1fr); }
+    .comp-box {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      border: var(--border-width) var(--border-style) var(--color-border-light);
+    }
+
+    /* Modal inline preview fix */
+    .modal-preview .modal {
+      position: relative; box-shadow: var(--shadow-xl); margin: 0;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 1024px) {
+      .ds-layout { grid-template-columns: 1fr; }
+      .ds-toc { display: none; }
+      .brand-group { grid-template-columns: repeat(2, 1fr); }
+      .comp-grid--2, .comp-grid--3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .ds-header__bar { padding: var(--space-sm) var(--space-md); }
+      .ds-tabs__inner { padding: 0 var(--space-md); overflow-x: auto; }
+      .ds-tabs__btn { padding: var(--space-sm) var(--space-md); font-size: var(--text-body-size); }
+      .ds-main { padding: var(--space-xl) var(--space-md); }
+      .token-grid { grid-template-columns: 1fr; }
+      .type-sample { flex-direction: column; gap: var(--space-sm); }
+      .type-sample__meta { width: 100%; }
+      .comp-grid { grid-template-columns: 1fr; }
+      .ds-header__title { font-size: var(--text-body-size); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════
+       HEADER
+       ════════════════════════════════════════════ -->
+  <header class="ds-header">
+    <div class="ds-header__bar">
+      <div class="ds-header__left">
+        <div class="ds-header__logo"><i data-lucide="hexagon"></i></div>
+        <span class="ds-header__title">Modern Startup App</span>
+        <span class="ds-header__version">v1.0</span>
+      </div>
+      <div class="ds-header__right">
+        <a href="landing.html" class="btn btn--text btn--sm">Landing</a>
+        <a href="dashboard-demo.html" class="btn btn--text btn--sm">Dashboard</a>
+        <button class="btn btn--ghost btn--sm btn--icon" id="themeToggle" aria-label="Toggle dark mode">
+          <i data-lucide="moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ════════════════════════════════════════════
+       MEGA TAB SWITCH
+       ════════════════════════════════════════════ -->
+  <nav class="ds-tabs" role="tablist" aria-label="Design system sections">
+    <div class="ds-tabs__inner">
+      <button class="ds-tabs__btn ds-tabs__btn--active" role="tab" aria-selected="true" aria-controls="panel-tokens" id="tab-tokens" data-tab="tokens">
+        <i data-lucide="palette"></i>
+        Tokens
+      </button>
+      <button class="ds-tabs__btn" role="tab" aria-selected="false" aria-controls="panel-components" id="tab-components" data-tab="components">
+        <i data-lucide="layout-grid"></i>
+        Components
+        <span class="ds-tabs__count">37</span>
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- ╔══════════════════════════════════════════════════╗
+       ║  TAB 1: TOKENS                                   ║
+       ╚══════════════════════════════════════════════════╝ -->
+  <div class="ds-panel ds-panel--active" id="panel-tokens" role="tabpanel" aria-labelledby="tab-tokens">
+    <div class="ds-main">
+
+      <!-- ── RAW PALETTE ── -->
+      <section class="ds-section">
+        <h2 class="ds-section__title">Color Palette</h2>
+        <p class="ds-section__desc">Layer 1 — immutable color values. These never change per theme. Brand slots and semantic tokens reference these.</p>
+
+        <div class="ds-section__subtitle">Core</div>
+        <div class="token-grid">
+          <div class="token-card"><div class="token-swatch" style="background:#1E1E1E"></div><div class="token-card__info"><div class="token-card__name">--color-black</div><div class="token-card__value">#1E1E1E</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFFFFF"></div><div class="token-card__info"><div class="token-card__name">--color-white</div><div class="token-card__value">#FFFFFF</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#ED504E"></div><div class="token-card__info"><div class="token-card__name">--color-red</div><div class="token-card__value">#ED504E</div></div></div>
+        </div>
+
+        <div class="ds-section__subtitle">Spectrum</div>
+        <div class="token-grid">
+          <div class="token-card"><div class="token-swatch" style="background:#325AFF"></div><div class="token-card__info"><div class="token-card__name">--color-blue</div><div class="token-card__value">#325AFF</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#00BE82"></div><div class="token-card__info"><div class="token-card__name">--color-green</div><div class="token-card__value">#00BE82</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFC828"></div><div class="token-card__info"><div class="token-card__name">--color-yellow</div><div class="token-card__value">#FFC828</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FF7832"></div><div class="token-card__info"><div class="token-card__name">--color-orange</div><div class="token-card__value">#FF7832</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFAAC8"></div><div class="token-card__info"><div class="token-card__name">--color-pink</div><div class="token-card__value">#FFAAC8</div></div></div>
+        </div>
+
+        <div class="ds-section__subtitle">Greys</div>
+        <div class="token-grid">
+          <div class="token-card"><div class="token-swatch" style="background:#1E1E1E"></div><div class="token-card__info"><div class="token-card__name">--color-grey-900</div><div class="token-card__value">#1E1E1E</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#2A2A2A"></div><div class="token-card__info"><div class="token-card__name">--color-grey-800</div><div class="token-card__value">#2A2A2A</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#666666"></div><div class="token-card__info"><div class="token-card__name">--color-grey-700</div><div class="token-card__value">#666666</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#444444"></div><div class="token-card__info"><div class="token-card__name">--color-grey-600</div><div class="token-card__value">#444444</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#999999"></div><div class="token-card__info"><div class="token-card__name">--color-grey-500</div><div class="token-card__value">#999999</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#AAAAAA"></div><div class="token-card__info"><div class="token-card__name">--color-grey-400</div><div class="token-card__value">#AAAAAA</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#CCCCCC"></div><div class="token-card__info"><div class="token-card__name">--color-grey-300</div><div class="token-card__value">#CCCCCC</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#DDDDDD"></div><div class="token-card__info"><div class="token-card__name">--color-grey-200</div><div class="token-card__value">#DDDDDD</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#EAEAEA"></div><div class="token-card__info"><div class="token-card__name">--color-grey-100</div><div class="token-card__value">#EAEAEA</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#F5F5F5"></div><div class="token-card__info"><div class="token-card__name">--color-grey-50</div><div class="token-card__value">#F5F5F5</div></div></div>
+        </div>
+
+        <div class="ds-section__subtitle">Tints</div>
+        <div class="token-grid">
+          <div class="token-card"><div class="token-swatch" style="background:#98ACFF"></div><div class="token-card__info"><div class="token-card__name">--color-blue-50</div><div class="token-card__value">#98ACFF</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#CBD6FF"></div><div class="token-card__info"><div class="token-card__name">--color-blue-25</div><div class="token-card__value">#CBD6FF</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#E5EAFF"></div><div class="token-card__info"><div class="token-card__name">--color-blue-15</div><div class="token-card__value">#E5EAFF</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#7FDEC0"></div><div class="token-card__info"><div class="token-card__name">--color-green-50</div><div class="token-card__value">#7FDEC0</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#BFEEE0"></div><div class="token-card__info"><div class="token-card__name">--color-green-25</div><div class="token-card__value">#BFEEE0</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#D9F5ED"></div><div class="token-card__info"><div class="token-card__name">--color-green-15</div><div class="token-card__value">#D9F5ED</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFE393"></div><div class="token-card__info"><div class="token-card__name">--color-yellow-50</div><div class="token-card__value">#FFE393</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFF1C9"></div><div class="token-card__info"><div class="token-card__name">--color-yellow-25</div><div class="token-card__value">#FFF1C9</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFBB98"></div><div class="token-card__info"><div class="token-card__name">--color-orange-50</div><div class="token-card__value">#FFBB98</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFDDCB"></div><div class="token-card__info"><div class="token-card__name">--color-orange-25</div><div class="token-card__value">#FFDDCB</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#F9C7C6"></div><div class="token-card__info"><div class="token-card__name">--color-red-25</div><div class="token-card__value">#F9C7C6</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FBDDDD"></div><div class="token-card__info"><div class="token-card__name">--color-red-15</div><div class="token-card__value">#FBDDDD</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#FFD4E5"></div><div class="token-card__info"><div class="token-card__name">--color-pink-50</div><div class="token-card__value">#FFD4E5</div></div></div>
+        </div>
+
+        <div class="ds-section__subtitle">Darkened Variants</div>
+        <div class="token-grid">
+          <div class="token-card"><div class="token-swatch" style="background:#D94544"></div><div class="token-card__info"><div class="token-card__name">--color-red-dark</div><div class="token-card__value">#D94544</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#2A4EE0"></div><div class="token-card__info"><div class="token-card__name">--color-blue-dark</div><div class="token-card__value">#2A4EE0</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#00A873"></div><div class="token-card__info"><div class="token-card__name">--color-green-dark</div><div class="token-card__value">#00A873</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#E0B023"></div><div class="token-card__info"><div class="token-card__name">--color-yellow-dark</div><div class="token-card__value">#E0B023</div></div></div>
+          <div class="token-card"><div class="token-swatch" style="background:#E56A2B"></div><div class="token-card__info"><div class="token-card__name">--color-orange-dark</div><div class="token-card__value">#E56A2B</div></div></div>
+        </div>
+      </section>
+
+      <hr class="ds-divider">
+
+      <!-- ── BRAND SLOTS ── -->
+      <section class="ds-section">
+        <h2 class="ds-section__title">Brand Slots</h2>
+        <p class="ds-section__desc">Layer 2 — change these four variables per group to re-skin the entire UI. Components never reference raw palette directly.</p>
+
+        <div class="ds-section__subtitle">Primary</div>
+        <div class="brand-group">
+          <div class="brand-swatch" style="background: var(--brand); color: var(--color-white);"><div class="brand-swatch__label">--brand</div><div class="brand-swatch__value">Base</div></div>
+          <div class="brand-swatch" style="background: var(--brand-hover); color: var(--color-white);"><div class="brand-swatch__label">--brand-hover</div><div class="brand-swatch__value">Hover</div></div>
+          <div class="brand-swatch" style="background: var(--brand-light);"><div class="brand-swatch__label">--brand-light</div><div class="brand-swatch__value">Light</div></div>
+          <div class="brand-swatch" style="background: var(--brand-mid);"><div class="brand-swatch__label">--brand-mid</div><div class="brand-swatch__value">Mid</div></div>
+        </div>
+
+        <div class="ds-section__subtitle">Secondary</div>
+        <div class="brand-group">
+          <div class="brand-swatch" style="background: var(--brand-secondary); color: var(--color-white);"><div class="brand-swatch__label">--brand-secondary</div><div class="brand-swatch__value">Base</div></div>
+          <div class="brand-swatch" style="background: var(--brand-secondary-hover); color: var(--color-white);"><div class="brand-swatch__label">--brand-secondary-hover</div><div class="brand-swatch__value">Hover</div></div>
+          <div class="brand-swatch" style="background: var(--brand-secondary-light);"><div class="brand-swatch__label">--brand-secondary-light</div><div class="brand-swatch__value">Light</div></div>
+          <div class="brand-swatch" style="background: var(--brand-secondary-mid);"><div class="brand-swatch__label">--brand-secondary-mid</div><div class="brand-swatch__value">Mid</div></div>
+        </div>
+
+        <div class="ds-section__subtitle">Accent</div>
+        <div class="brand-group">
+          <div class="brand-swatch" style="background: var(--brand-accent); color: var(--color-white);"><div class="brand-swatch__label">--brand-accent</div><div class="brand-swatch__value">Base</div></div>
+          <div class="brand-swatch" style="background: var(--brand-accent-hover); color: var(--color-white);"><div class="brand-swatch__label">--brand-accent-hover</div><div class="brand-swatch__value">Hover</div></div>
+          <div class="brand-swatch" style="background: var(--brand-accent-light);"><div class="brand-swatch__label">--brand-accent-light</div><div class="brand-swatch__value">Light</div></div>
+          <div class="brand-swatch" style="background: var(--brand-accent-mid);"><div class="brand-swatch__label">--brand-accent-mid</div><div class="brand-swatch__value">Mid</div></div>
+        </div>
+      </section>
+
+      <hr class="ds-divider">
+
+      <!-- ── SEMANTIC TOKENS ── -->
+      <section class="ds-section">
+        <h2 class="ds-section__title">Semantic Tokens</h2>
+        <p class="ds-section__desc">Layer 3 — UI-facing tokens. Dark mode overrides only this layer. Components consume these, never raw palette values.</p>
+
+        <div class="ds-section__subtitle">Backgrounds</div>
+        <table class="sem-table">
+          <thead><tr><th style="width:24px"></th><th>Token</th><th>Maps To</th></tr></thead>
+          <tbody>
+            <tr><td><span class="sem-dot" style="background:var(--color-bg)"></span></td><td><code>--color-bg</code></td><td>Page background</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-surface)"></span></td><td><code>--color-surface</code></td><td>Card/panel background</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-surface-alt)"></span></td><td><code>--color-surface-alt</code></td><td>Alternate surface</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-surface-active)"></span></td><td><code>--color-surface-active</code></td><td>Active/selected surface</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-surface-raised)"></span></td><td><code>--color-surface-raised</code></td><td>Elevated surface</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-surface-dark)"></span></td><td><code>--color-surface-dark</code></td><td>Dark panels (sidebar)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="ds-section__subtitle">Text</div>
+        <table class="sem-table">
+          <thead><tr><th style="width:24px"></th><th>Token</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><span class="sem-dot" style="background:var(--color-text-primary)"></span></td><td><code>--color-text-primary</code></td><td>Headings, body text</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-text-secondary)"></span></td><td><code>--color-text-secondary</code></td><td>Descriptions, subtitles</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-text-muted)"></span></td><td><code>--color-text-muted</code></td><td>Timestamps, hints</td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-text-inverse)"></span></td><td><code>--color-text-inverse</code></td><td>Text on dark surfaces</td></tr>
+          </tbody>
+        </table>
+
+        <div class="ds-section__subtitle">Status Colors</div>
+        <table class="sem-table">
+          <thead><tr><th style="width:24px"></th><th>Token</th><th>Light</th><th>Text</th></tr></thead>
+          <tbody>
+            <tr><td><span class="sem-dot" style="background:var(--color-success)"></span></td><td><code>--color-success</code></td><td><span class="sem-dot" style="background:var(--color-success-light)"></span></td><td><span class="sem-dot" style="background:var(--color-success-text)"></span></td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-warning)"></span></td><td><code>--color-warning</code></td><td><span class="sem-dot" style="background:var(--color-warning-light)"></span></td><td><span class="sem-dot" style="background:var(--color-warning-text)"></span></td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-error)"></span></td><td><code>--color-error</code></td><td><span class="sem-dot" style="background:var(--color-error-light)"></span></td><td><span class="sem-dot" style="background:var(--color-error-text)"></span></td></tr>
+            <tr><td><span class="sem-dot" style="background:var(--color-info)"></span></td><td><code>--color-info</code></td><td><span class="sem-dot" style="background:var(--color-info-light)"></span></td><td><span class="sem-dot" style="background:var(--color-info-text)"></span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <hr class="ds-divider">
+
+      <!-- ── TYPOGRAPHY ── -->
+      <section class="ds-section">
+        <h2 class="ds-section__title">Typography</h2>
+        <p class="ds-section__desc">Plus Jakarta Sans for display and body. JetBrains Mono for code. The type scale covers hero down to extra-small.</p>
+
+        <div class="ds-section__subtitle">Font Families</div>
+        <div style="margin-bottom: var(--space-xl);">
+          <div class="type-sample">
+            <div class="type-sample__text" style="font-family: var(--font-display); font-size: var(--text-h2-size); font-weight: 700;">Plus Jakarta Sans</div>
+            <div class="type-sample__meta">--font-display<br>--font-body<br>Display + body text</div>
+          </div>
+          <div class="type-sample">
+            <div class="type-sample__text" style="font-family: var(--font-mono); font-size: var(--text-h3-size); font-weight: 500;">JetBrains Mono</div>
+            <div class="type-sample__meta">--font-mono<br>Code, tokens, values</div>
+          </div>
+        </div>
+
+        <div class="ds-section__subtitle">Type Scale</div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-hero-size);font-weight:var(--text-hero-weight);line-height:var(--text-hero-lh)">Hero heading</div>
+          <div class="type-sample__meta">--text-hero<br>32px / 700 / 1.2</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-h1-size);font-weight:var(--text-h1-weight);line-height:var(--text-h1-lh)">Heading 1</div>
+          <div class="type-sample__meta">--text-h1<br>24px / 700 / 1.25</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-h2-size);font-weight:var(--text-h2-weight);line-height:var(--text-h2-lh)">Heading 2</div>
+          <div class="type-sample__meta">--text-h2<br>20px / 700 / 1.3</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-h3-size);font-weight:var(--text-h3-weight);line-height:var(--text-h3-lh)">Heading 3</div>
+          <div class="type-sample__meta">--text-h3<br>16px / 600 / 1.4</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-h4-size);font-weight:var(--text-h4-weight);line-height:var(--text-h4-lh)">Heading 4</div>
+          <div class="type-sample__meta">--text-h4<br>14px / 600 / 1.4</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-body-size);font-weight:var(--text-body-weight);line-height:var(--text-body-lh)">Body text — the quick brown fox jumps over the lazy dog</div>
+          <div class="type-sample__meta">--text-body<br>14px / 400 / 1.5</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-small-size);font-weight:var(--text-small-weight);line-height:var(--text-small-lh)">Small text — secondary descriptions and captions</div>
+          <div class="type-sample__meta">--text-small<br>13px / 400 / 1.5</div>
+        </div>
+        <div class="type-sample">
+          <div class="type-sample__text" style="font-size:var(--text-xs-size);font-weight:var(--text-xs-weight);line-height:var(--text-xs-lh)">Extra small — tags, badges, timestamps</div>
+          <div class="type-sample__meta">--text-xs<br>12px / 500 / 1.4</div>
+        </div>
+      </section>
+
+      <hr class="ds-divider">
+
+      <!-- ── SPACING ── -->
+      <section class="ds-section">
+        <h2 class="ds-section__title">Spacing</h2>
+        <p class="ds-section__desc">Consistent spacing scale from 4px to 40px. Used for padding, margins, and gaps throughout all components.</p>
+        <div class="spacing-row"><span class="spacing-label">--space-2xs</span><div class="spacing-bar" style="width:4px"></div><span class="spacing-value">4px</span></div>
+        <div class="spacing-row"><span class="spacing-label">--space-xs</span><div class="spacing-bar" style="width:8px"></div><span class="spacing-value">8px</span></div>
+        <div class="spacing-row"><span class="spacing-label">--space-sm</span><div class="spacing-bar" style="width:12px"></div><span class="spacing-value">12px</span></div>
+        <div class="spacing-row"><span class="spacing-label">--space-md</span><div class="spacing-bar" style="width:16px"></div><span class="spacing-value">16px</span></div>
+        <div class="spacing-row"><span class="spacing-label">--space-lg</span><div class="spacing-bar" style="width:20px"></div><span class="spacing-value">20px</span></div>
+        <div class="spacing-row"><span class="spacing-label">--space-xl</span><div class="spacing-bar" style="width:24px"></div><span class="spacing-value">24px</span></div>
+        <div class="spacing-row"><span class="spacing-label">--space-2xl</span><div class="spacing-bar" style="width:32px"></div><span class="spacing-value">32px</span></div>
+        <div class="spacing-row"><span class="spacing-label">--space-3xl</span><div class="spacing-bar" style="width:40px"></div><span class="spacing-value">40px</span></div>
+      </section>
+
+      <hr class="ds-divider">
+
+      <!-- ── SHADOWS ── -->
+      <section class="ds-section">
+        <h2 class="ds-section__title">Shadows</h2>
+        <p class="ds-section__desc">Six elevation levels from subtle to dramatic. Cards use shadow-card by default, modals use shadow-xl.</p>
+        <div class="shadow-grid">
+          <div class="shadow-demo" style="box-shadow:var(--shadow-xs)"><div class="shadow-demo__name">shadow-xs</div></div>
+          <div class="shadow-demo" style="box-shadow:var(--shadow-card)"><div class="shadow-demo__name">shadow-card</div></div>
+          <div class="shadow-demo" style="box-shadow:var(--shadow-sm)"><div class="shadow-demo__name">shadow-sm</div></div>
+          <div class="shadow-demo" style="box-shadow:var(--shadow-md)"><div class="shadow-demo__name">shadow-md</div></div>
+          <div class="shadow-demo" style="box-shadow:var(--shadow-lg)"><div class="shadow-demo__name">shadow-lg</div></div>
+          <div class="shadow-demo" style="box-shadow:var(--shadow-xl)"><div class="shadow-demo__name">shadow-xl</div></div>
+        </div>
+      </section>
+
+      <hr class="ds-divider">
+
+      <!-- ── RADII ── -->
+      <section class="ds-section">
+        <h2 class="ds-section__title">Border Radius</h2>
+        <p class="ds-section__desc">From tight corners for inputs to fully rounded pills and avatars.</p>
+        <div class="radius-grid">
+          <div class="radius-demo"><div class="radius-demo__box" style="border-radius:var(--radius-xs)"></div><div class="radius-demo__name">xs</div><div class="radius-demo__value">3px</div></div>
+          <div class="radius-demo"><div class="radius-demo__box" style="border-radius:var(--radius-sm)"></div><div class="radius-demo__name">sm</div><div class="radius-demo__value">4px</div></div>
+          <div class="radius-demo"><div class="radius-demo__box" style="border-radius:var(--radius-md)"></div><div class="radius-demo__name">md</div><div class="radius-demo__value">8px</div></div>
+          <div class="radius-demo"><div class="radius-demo__box" style="border-radius:var(--radius-lg)"></div><div class="radius-demo__name">lg</div><div class="radius-demo__value">12px</div></div>
+          <div class="radius-demo"><div class="radius-demo__box" style="border-radius:var(--radius-xl)"></div><div class="radius-demo__name">xl</div><div class="radius-demo__value">16px</div></div>
+          <div class="radius-demo"><div class="radius-demo__box" style="border-radius:var(--radius-full)"></div><div class="radius-demo__name">full</div><div class="radius-demo__value">9999px</div></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+
+  <!-- ╔══════════════════════════════════════════════════╗
+       ║  TAB 2: COMPONENTS                               ║
+       ╚══════════════════════════════════════════════════╝ -->
+  <div class="ds-panel" id="panel-components" role="tabpanel" aria-labelledby="tab-components">
+    <div class="ds-main">
+      <div class="ds-layout">
+
+        <!-- Sidebar TOC -->
+        <aside class="ds-toc">
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Navigation</div>
+            <a href="#sidebar-nav" class="ds-toc__link">Sidebar Nav</a>
+            <a href="#top-nav" class="ds-toc__link">Top Nav</a>
+            <a href="#mobile-nav" class="ds-toc__link">Mobile Nav</a>
+            <a href="#content-tabs" class="ds-toc__link">Content Tabs</a>
+          </div>
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Actions</div>
+            <a href="#buttons" class="ds-toc__link">Buttons</a>
+            <a href="#toggles" class="ds-toc__link">Toggles</a>
+            <a href="#dropdowns" class="ds-toc__link">Dropdowns</a>
+          </div>
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Data Display</div>
+            <a href="#tags" class="ds-toc__link">Tags &amp; Badges</a>
+            <a href="#cards" class="ds-toc__link">Cards</a>
+            <a href="#stat-cards" class="ds-toc__link">Stat Cards</a>
+            <a href="#tables" class="ds-toc__link">Tables</a>
+            <a href="#avatars" class="ds-toc__link">Avatars</a>
+            <a href="#pagination" class="ds-toc__link">Pagination</a>
+            <a href="#progress" class="ds-toc__link">Progress</a>
+            <a href="#tooltips" class="ds-toc__link">Tooltips</a>
+          </div>
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Forms</div>
+            <a href="#forms" class="ds-toc__link">Form Fields</a>
+            <a href="#range-sliders" class="ds-toc__link">Range Sliders</a>
+          </div>
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Feedback</div>
+            <a href="#alerts" class="ds-toc__link">Alerts</a>
+            <a href="#toasts" class="ds-toc__link">Toasts</a>
+            <a href="#modals" class="ds-toc__link">Modals</a>
+            <a href="#empty" class="ds-toc__link">Empty States</a>
+          </div>
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Layout</div>
+            <a href="#page-header" class="ds-toc__link">Page Header</a>
+            <a href="#content-sections" class="ds-toc__link">Content Sections</a>
+          </div>
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Content</div>
+            <a href="#heroes" class="ds-toc__link">Heroes</a>
+            <a href="#filter-bar" class="ds-toc__link">Filter Bar</a>
+            <a href="#schedule-card" class="ds-toc__link">Schedule Card</a>
+            <a href="#task-list" class="ds-toc__link">Task List</a>
+            <a href="#discussion" class="ds-toc__link">Discussion</a>
+            <a href="#activity-feed" class="ds-toc__link">Activity Feed</a>
+            <a href="#nav-tabs" class="ds-toc__link">Tabs &amp; Filters</a>
+          </div>
+          <div class="ds-toc__group">
+            <div class="ds-toc__heading">Widgets</div>
+            <a href="#discount-widget" class="ds-toc__link">Discount Widget</a>
+            <a href="#attendees" class="ds-toc__link">Attendees</a>
+            <a href="#booking-sidebar" class="ds-toc__link">Booking Sidebar</a>
+          </div>
+        </aside>
+
+        <!-- Component Content -->
+        <div class="ds-content">
+
+          <!-- ── SIDEBAR NAVIGATION ── -->
+          <section class="ds-section" id="sidebar-nav">
+            <h2 class="ds-section__title">Sidebar Navigation</h2>
+            <p class="ds-section__desc">Collapsed icon-only sidebar with flyout submenus on hover. Fixed left position in dashboard layouts.</p>
+
+            <div class="comp-label">Collapsed (Icon-Only)</div>
+            <div style="display: flex; gap: var(--space-xl); align-items: flex-start;">
+              <aside class="sidebar-nav" style="position: relative; height: 400px; width: 64px; border-radius: var(--radius-lg); overflow: visible; z-index: 1;">
+                <div class="sidebar-nav__logo">
+                  <i data-lucide="hexagon"></i>
+                </div>
+                <nav class="sidebar-nav__menu">
+                  <a href="#" class="sidebar-nav__item sidebar-nav__item--active" aria-label="Home" aria-current="page">
+                    <i data-lucide="home"></i>
+                  </a>
+                  <a href="#" class="sidebar-nav__item" aria-label="Calendar">
+                    <i data-lucide="calendar"></i>
+                  </a>
+                  <div class="sidebar-nav__item sidebar-nav__item--has-submenu" aria-label="Insights">
+                    <i data-lucide="bar-chart-3"></i>
+                    <div class="sidebar-nav__flyout">
+                      <div class="sidebar-nav__flyout-title">Insights</div>
+                      <a href="#" class="sidebar-nav__flyout-item">Overview</a>
+                      <a href="#" class="sidebar-nav__flyout-item sidebar-nav__flyout-item--active">Analytics</a>
+                      <a href="#" class="sidebar-nav__flyout-item">Reports</a>
+                    </div>
+                  </div>
+                  <a href="#" class="sidebar-nav__item" aria-label="Users">
+                    <i data-lucide="users"></i>
+                  </a>
+                  <a href="#" class="sidebar-nav__item" aria-label="Messages">
+                    <i data-lucide="message-square"></i>
+                  </a>
+                </nav>
+                <div class="sidebar-nav__footer">
+                  <a href="#" class="sidebar-nav__item" aria-label="Settings">
+                    <i data-lucide="settings"></i>
+                  </a>
+                </div>
+              </aside>
+              <div style="font-size: var(--text-small-size); color: var(--color-text-muted); max-width: 280px; line-height: 1.6;">
+                Hover over the chart icon to see the flyout submenu. The sidebar uses <code style="font-family: var(--font-mono); font-size: var(--text-xs-size);">.sidebar-nav</code> with dark surface background and flyout submenus.
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TOP NAVIGATION ── -->
+          <section class="ds-section" id="top-nav">
+            <h2 class="ds-section__title">Top Navigation</h2>
+            <p class="ds-section__desc">Fixed top bar with nav items, search, notifications, and profile. Adapts to mobile with hamburger menu.</p>
+
+            <div class="comp-label">Full Top Nav</div>
+            <div style="border: var(--border-width) var(--border-style) var(--color-border-light); border-radius: var(--radius-lg); overflow: hidden;">
+              <header class="top-nav" style="position: relative;">
+                <div class="top-nav__items">
+                  <a href="#" class="top-nav__item top-nav__item--active">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                  </a>
+                  <a href="#" class="top-nav__item">
+                    <i data-lucide="network"></i>
+                    <span>Org Chart</span>
+                  </a>
+                  <a href="#" class="top-nav__item">
+                    <i data-lucide="calendar"></i>
+                    <span>Calendar</span>
+                  </a>
+                </div>
+                <div class="top-nav__actions">
+                  <button class="top-nav__search" aria-label="Search">
+                    <i data-lucide="search"></i>
+                    <span class="top-nav__search-text">Search…</span>
+                    <kbd class="top-nav__search-shortcut">⌘K</kbd>
+                  </button>
+                  <button class="top-nav__icon-btn" aria-label="Notifications">
+                    <i data-lucide="bell"></i>
+                    <span class="top-nav__badge">3</span>
+                  </button>
+                  <button class="top-nav__icon-btn" aria-label="Settings">
+                    <i data-lucide="settings"></i>
+                  </button>
+                  <img src="../assets/avatars/avatar-a01.png" alt="User" class="top-nav__avatar" style="width: 36px; height: 36px; border-radius: var(--radius-full); cursor: pointer;">
+                </div>
+              </header>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── MOBILE NAV BAR ── -->
+          <section class="ds-section" id="mobile-nav">
+            <h2 class="ds-section__title">Mobile Navigation</h2>
+            <p class="ds-section__desc">Mobile nav bar with hamburger trigger and slide-out drawer. Shown as inline preview.</p>
+
+            <div class="comp-label">Mobile Nav Bar</div>
+            <div style="max-width: 375px; border: var(--border-width) var(--border-style) var(--color-border-light); border-radius: var(--radius-lg); overflow: hidden;">
+              <div class="mobile-nav-bar" style="display: flex; position: relative; z-index: 1;">
+                <button class="mobile-nav-bar__hamburger" aria-label="Open menu">
+                  <i data-lucide="menu"></i>
+                </button>
+                <div class="mobile-nav-bar__logo">
+                  <i data-lucide="hexagon"></i>
+                  <span class="mobile-nav-bar__logo-text">Startup App</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="comp-label">Mobile Drawer (Preview)</div>
+            <div style="max-width: 280px; height: 400px; border-radius: var(--radius-lg); overflow: hidden; position: relative;">
+              <div class="mobile-drawer" style="position: absolute; top: 0; left: 0; transform: translateX(0); width: 100%; height: 100%; z-index: 1;">
+                <div class="mobile-drawer__header">
+                  <div class="mobile-drawer__logo">
+                    <i data-lucide="hexagon"></i>
+                    <span class="mobile-drawer__logo-text">Startup App</span>
+                  </div>
+                  <button class="mobile-drawer__close" aria-label="Close menu">
+                    <i data-lucide="x"></i>
+                  </button>
+                </div>
+                <nav class="mobile-drawer__menu">
+                  <a href="#" class="mobile-drawer__item mobile-drawer__item--active">
+                    <i data-lucide="home"></i> Dashboard
+                  </a>
+                  <a href="#" class="mobile-drawer__item">
+                    <i data-lucide="calendar"></i> Calendar
+                  </a>
+                  <a href="#" class="mobile-drawer__item">
+                    <i data-lucide="users"></i> Team
+                  </a>
+                  <div class="mobile-drawer__divider"></div>
+                  <a href="#" class="mobile-drawer__item">
+                    <i data-lucide="settings"></i> Settings
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── CONTENT TABS ── -->
+          <section class="ds-section" id="content-tabs">
+            <h2 class="ds-section__title">Content Tabs</h2>
+            <p class="ds-section__desc">Secondary navigation strip below the top nav, used for sub-views within a page section.</p>
+
+            <div style="border: var(--border-width) var(--border-style) var(--color-border-light); border-radius: var(--radius-lg); overflow: hidden;">
+              <div class="content-tabs" role="tablist" aria-label="Section views">
+                <a href="#" class="content-tabs__item content-tabs__item--active" role="tab" aria-selected="true">Overview</a>
+                <a href="#" class="content-tabs__item" role="tab" aria-selected="false">Team Members</a>
+                <a href="#" class="content-tabs__item" role="tab" aria-selected="false">Activity</a>
+                <a href="#" class="content-tabs__item" role="tab" aria-selected="false">Settings</a>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── BUTTONS ── -->
+          <section class="ds-section" id="buttons">
+            <h2 class="ds-section__title">Buttons</h2>
+            <p class="ds-section__desc">Filled, soft, outlined, ghost, and text variants across four sizes. All support icons, loading states, and disabled.</p>
+
+            <div class="comp-label">Filled</div>
+            <div class="comp-row">
+              <button class="btn btn--primary btn--md"><i data-lucide="plus"></i> Primary</button>
+              <button class="btn btn--dark btn--md">Dark</button>
+              <button class="btn btn--accent btn--md">Accent</button>
+              <button class="btn btn--success btn--md">Success</button>
+              <button class="btn btn--error btn--md">Error</button>
+            </div>
+
+            <div class="comp-label">Soft</div>
+            <div class="comp-row">
+              <button class="btn btn--soft-primary btn--md">Soft Primary</button>
+              <button class="btn btn--soft-success btn--md">Soft Success</button>
+              <button class="btn btn--soft-error btn--md">Soft Error</button>
+              <button class="btn btn--soft-warning btn--md">Soft Warning</button>
+            </div>
+
+            <div class="comp-label">Outlined &amp; Ghost</div>
+            <div class="comp-row">
+              <button class="btn btn--outlined btn--md"><i data-lucide="filter"></i> Outlined</button>
+              <button class="btn btn--outlined-primary btn--md">Outlined Primary</button>
+              <button class="btn btn--ghost btn--md">Ghost</button>
+              <button class="btn btn--text btn--md">Text</button>
+              <button class="btn btn--text-primary btn--md">Text Primary</button>
+            </div>
+
+            <div class="comp-label">Sizes</div>
+            <div class="comp-row">
+              <button class="btn btn--primary btn--lg">Large</button>
+              <button class="btn btn--primary btn--md">Medium</button>
+              <button class="btn btn--primary btn--sm">Small</button>
+              <button class="btn btn--primary btn--tiny">Tiny</button>
+            </div>
+
+            <div class="comp-label">States &amp; Icon-Only</div>
+            <div class="comp-row">
+              <button class="btn btn--primary btn--md btn--loading">Loading</button>
+              <button class="btn btn--outlined btn--md btn--disabled">Disabled</button>
+              <button class="btn btn--dark btn--md btn--icon"><i data-lucide="settings"></i></button>
+              <button class="btn btn--outlined btn--md btn--icon"><i data-lucide="heart"></i></button>
+              <button class="btn btn--ghost btn--sm btn--icon"><i data-lucide="more-horizontal"></i></button>
+            </div>
+
+            <div class="comp-label">Full Width</div>
+            <div style="max-width: 400px;">
+              <button class="btn btn--primary btn--md btn--full"><i data-lucide="send"></i> Send Message</button>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TOGGLES ── -->
+          <section class="ds-section" id="toggles">
+            <h2 class="ds-section__title">Toggles</h2>
+            <p class="ds-section__desc">Switch controls in three sizes. Supports checked state, disabled, and label pairing.</p>
+            <div class="comp-row">
+              <label class="toggle toggle--lg"><input type="checkbox" class="toggle__input" checked><span class="toggle__track"><span class="toggle__knob"><i data-lucide="check"></i></span></span></label>
+              <label class="toggle"><input type="checkbox" class="toggle__input" checked><span class="toggle__track"><span class="toggle__knob"><i data-lucide="check"></i></span></span></label>
+              <label class="toggle toggle--sm"><input type="checkbox" class="toggle__input"><span class="toggle__track"><span class="toggle__knob"><i data-lucide="check"></i></span></span></label>
+              <label class="toggle toggle--disabled"><input type="checkbox" class="toggle__input" disabled><span class="toggle__track"><span class="toggle__knob"><i data-lucide="check"></i></span></span></label>
+            </div>
+            <div class="comp-row" style="margin-top: var(--space-md);">
+              <div class="toggle-field">
+                <label class="toggle"><input type="checkbox" class="toggle__input" checked><span class="toggle__track"><span class="toggle__knob"><i data-lucide="check"></i></span></span></label>
+                <span class="toggle-field__label">Email notifications</span>
+              </div>
+              <div class="toggle-field">
+                <label class="toggle"><input type="checkbox" class="toggle__input"><span class="toggle__track"><span class="toggle__knob"><i data-lucide="check"></i></span></span></label>
+                <span class="toggle-field__label toggle-field__label--muted">Marketing emails</span>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── DROPDOWNS ── -->
+          <section class="ds-section" id="dropdowns">
+            <h2 class="ds-section__title">Dropdowns</h2>
+            <p class="ds-section__desc">Select menus in large and small sizes. Click to toggle open state.</p>
+            <div class="comp-grid--2" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
+              <div class="dropdown dropdown--lg dropdown--full">
+                <label class="dropdown__label">Role</label>
+                <button class="dropdown__trigger" data-dropdown><span class="dropdown__trigger-text">Admin</span><i data-lucide="chevron-down"></i></button>
+                <div class="dropdown__panel"><ul class="dropdown__options">
+                  <li class="dropdown__option dropdown__option--selected">Admin <span class="dropdown__option-check"><i data-lucide="check"></i></span></li>
+                  <li class="dropdown__option">Editor</li>
+                  <li class="dropdown__option">Viewer</li>
+                </ul></div>
+              </div>
+              <div class="dropdown dropdown--sm dropdown--full dropdown--open">
+                <label class="dropdown__label">Status</label>
+                <button class="dropdown__trigger" data-dropdown><span class="dropdown__trigger-text dropdown__trigger-text--placeholder">Select...</span><i data-lucide="chevron-down"></i></button>
+                <div class="dropdown__panel"><ul class="dropdown__options">
+                  <li class="dropdown__option">Active</li>
+                  <li class="dropdown__option">Pending</li>
+                  <li class="dropdown__option">Inactive</li>
+                </ul></div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TAGS ── -->
+          <section class="ds-section" id="tags">
+            <h2 class="ds-section__title">Tags &amp; Badges</h2>
+            <p class="ds-section__desc">Status indicators, category labels, and removable filter tags.</p>
+
+            <div class="comp-label">Status</div>
+            <div class="comp-row">
+              <span class="tag tag--confirmed"><i data-lucide="check"></i> Confirmed</span>
+              <span class="tag tag--pending"><i data-lucide="clock"></i> Pending</span>
+              <span class="tag tag--alert"><i data-lucide="alert-triangle"></i> Alert</span>
+              <span class="tag tag--waiting">Waiting</span>
+              <span class="tag tag--info">Info</span>
+            </div>
+
+            <div class="comp-label">Semantic</div>
+            <div class="comp-row">
+              <span class="tag tag--active">Active</span>
+              <span class="tag tag--closed">Closed</span>
+              <span class="tag tag--open">Open</span>
+              <span class="tag tag--replied">Replied</span>
+              <span class="tag tag--category"><i data-lucide="tag"></i> Design</span>
+            </div>
+
+            <div class="comp-label">Removable</div>
+            <div class="comp-row">
+              <span class="tag tag--removable">React <button class="tag__remove"><i data-lucide="x"></i></button></span>
+              <span class="tag tag--removable">TypeScript <button class="tag__remove"><i data-lucide="x"></i></button></span>
+              <span class="tag tag--removable">CSS <button class="tag__remove"><i data-lucide="x"></i></button></span>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── CARDS ── -->
+          <section class="ds-section" id="cards">
+            <h2 class="ds-section__title">Cards</h2>
+            <p class="ds-section__desc">Content containers with optional status borders, images, metadata, and action bars. Cards support image headers, body content, footers, and status variants.</p>
+
+            <div class="ds-section__subtitle">With Image</div>
+            <div class="cards-grid" style="margin-bottom: var(--space-xl);">
+              <div class="card">
+                <img src="https://picsum.photos/seed/workshop/600/320" alt="Design Workshop" class="card__image">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">Design Workshop</div>
+                    <span class="tag tag--confirmed">Active</span>
+                  </div>
+                  <div class="card__subtitle">A hands-on session covering the fundamentals of UI composition, design tokens, and component-driven architecture.</div>
+                  <div class="card__meta"><i data-lucide="calendar"></i> Mar 28, 2026 · 2:00 PM</div>
+                </div>
+                <div class="card__footer">
+                  <span class="card__footer-meta"><i data-lucide="users"></i> 24 attending</span>
+                  <button class="btn btn--primary btn--tiny">Register</button>
+                </div>
+              </div>
+              <div class="card">
+                <img src="https://picsum.photos/seed/offsite/600/320" alt="Team Offsite" class="card__image">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">Team Offsite Q2</div>
+                    <span class="tag tag--pending">Planning</span>
+                  </div>
+                  <div class="card__subtitle">Annual team retreat focused on strategic planning, bonding activities, and roadmap alignment for the upcoming quarter.</div>
+                  <div class="card__meta"><i data-lucide="map-pin"></i> Mountain View, CA</div>
+                </div>
+                <div class="card__footer">
+                  <span class="card__footer-meta"><i data-lucide="calendar"></i> Apr 12–14</span>
+                  <button class="btn btn--outlined btn--tiny">Details</button>
+                </div>
+              </div>
+              <div class="card">
+                <img src="https://picsum.photos/seed/hackathon/600/320" alt="Hackathon" class="card__image">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">Hackathon 2026</div>
+                    <span class="tag tag--info">Upcoming</span>
+                  </div>
+                  <div class="card__subtitle">48-hour internal hackathon. Build prototypes, pitch ideas, and compete for prizes across engineering and design tracks.</div>
+                  <div class="card__meta"><i data-lucide="trophy"></i> $5,000 in prizes</div>
+                </div>
+                <div class="card__footer">
+                  <span class="card__footer-meta"><i data-lucide="users"></i> 48 signed up</span>
+                  <button class="btn btn--primary btn--tiny">Join</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-section__subtitle">Status Variants</div>
+            <div class="cards-grid" style="margin-bottom: var(--space-xl);">
+              <div class="card card--status-confirmed">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">Sprint Review</div>
+                    <span class="tag tag--confirmed">Confirmed</span>
+                  </div>
+                  <div class="card__subtitle">Weekly sync with the engineering team to review sprint progress and demo completed features.</div>
+                  <div class="card__meta"><i data-lucide="users"></i> 8 attendees</div>
+                </div>
+              </div>
+              <div class="card card--status-pending">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">API Integration</div>
+                    <span class="tag tag--pending">In Review</span>
+                  </div>
+                  <div class="card__subtitle">Connecting payment gateway to the checkout flow. Awaiting security review from infrastructure team.</div>
+                  <div class="card__meta"><i data-lucide="git-branch"></i> 3 open PRs</div>
+                </div>
+              </div>
+              <div class="card card--status-error">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">Deploy Pipeline</div>
+                    <span class="tag tag--alert">Failed</span>
+                  </div>
+                  <div class="card__subtitle">Production deployment blocked by failing integration tests on the payments service module.</div>
+                  <div class="card__meta"><i data-lucide="alert-circle"></i> 2 errors detected</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-section__subtitle">Flat (No Shadow)</div>
+            <div class="cards-grid">
+              <div class="card card--flat">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">Project Alpha</div>
+                  </div>
+                  <div class="card__subtitle">Design system implementation for the new product launch. Phase 2 in progress with component audits.</div>
+                  <div class="card__actions">
+                    <button class="btn btn--primary btn--sm">Open</button>
+                    <button class="btn btn--ghost btn--sm btn--icon"><i data-lucide="more-horizontal"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="card card--flat">
+                <div class="card__body">
+                  <div class="card__header">
+                    <div class="card__title">Brand Refresh</div>
+                  </div>
+                  <div class="card__subtitle">Updating color palette, typography, and imagery guidelines across all customer-facing products and marketing materials.</div>
+                  <div class="card__actions">
+                    <button class="btn btn--outlined btn--sm">View</button>
+                    <button class="btn btn--ghost btn--sm btn--icon"><i data-lucide="more-horizontal"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── STAT CARDS ── -->
+          <section class="ds-section" id="stat-cards">
+            <h2 class="ds-section__title">Stat Cards</h2>
+            <p class="ds-section__desc">Dashboard metric cards in two sizes: <strong>compact</strong> (<code>.stat-card--compact</code>) for value-only cards, and <strong>detailed</strong> (<code>.stat-card--detailed</code>) for cards with charts, bars, donuts, or progress. Use compact when the card has only a value + label. Use detailed when adding visualizations so the card fills its height with no empty space.</p>
+
+            <div class="ds-section__subtitle">Compact — Value + Trend (no charts)</div>
+            <div class="stats-grid" style="margin-bottom: var(--space-xl);">
+              <!-- Revenue — hero value with positive trend -->
+              <div class="stat-card stat-card--compact">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Total Revenue</span>
+                  <span class="stat-card__badge" style="background: var(--color-success-light); color: var(--color-success);">
+                    <i data-lucide="trending-up" style="width: 10px; height: 10px; display: inline-block; vertical-align: -1px; margin-right: 2px;"></i>12%
+                  </span>
+                </div>
+                <div class="stat-card__value stat-card__value--hero">$48.2k</div>
+                <div class="stat-card__label">vs $43.1k last month</div>
+              </div>
+
+              <!-- Users — standard value with positive trend -->
+              <div class="stat-card stat-card--compact">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Active Users</span>
+                  <span class="stat-card__badge" style="background: var(--color-success-light); color: var(--color-success);">
+                    <i data-lucide="trending-up" style="width: 10px; height: 10px; display: inline-block; vertical-align: -1px; margin-right: 2px;"></i>8.3%
+                  </span>
+                </div>
+                <div class="stat-card__value">2,847</div>
+                <div class="stat-card__label">Across all workspaces</div>
+              </div>
+
+              <!-- Bounce Rate — negative trend -->
+              <div class="stat-card stat-card--compact">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Bounce Rate</span>
+                  <span class="stat-card__badge" style="background: var(--color-error-light); color: var(--color-error);">
+                    <i data-lucide="trending-down" style="width: 10px; height: 10px; display: inline-block; vertical-align: -1px; margin-right: 2px;"></i>3.1%
+                  </span>
+                </div>
+                <div class="stat-card__value">24.6%</div>
+                <div class="stat-card__label">7-day rolling average</div>
+              </div>
+
+              <!-- Avg Session — neutral badge -->
+              <div class="stat-card stat-card--compact">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Avg. Session</span>
+                  <span class="stat-card__badge">4m 32s</span>
+                </div>
+                <div class="stat-card__value">4:32</div>
+                <div class="stat-card__label">+18s from last week</div>
+              </div>
+            </div>
+
+            <div class="ds-section__subtitle">Detailed — With Visualizations</div>
+            <div class="stats-grid" style="margin-bottom: var(--space-xl);">
+              <!-- Bar chart variant -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Weekly Commits</span>
+                  <span class="stat-card__badge" style="background: var(--color-success-light); color: var(--color-success);">
+                    <i data-lucide="trending-up" style="width: 10px; height: 10px; display: inline-block; vertical-align: -1px; margin-right: 2px;"></i>24%
+                  </span>
+                </div>
+                <div class="stat-card__value">186</div>
+                <div class="stat-card__bars" style="margin-top: var(--space-sm);">
+                  <div class="stat-card__bar stat-card__bar--muted" style="height:35%"></div>
+                  <div class="stat-card__bar stat-card__bar--muted" style="height:50%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:65%"></div>
+                  <div class="stat-card__bar stat-card__bar--muted" style="height:45%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:80%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:90%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                </div>
+                <div class="stat-card__footer">Mon – Sun</div>
+              </div>
+
+              <!-- Progress bar variant -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Sprint Progress</span>
+                  <span class="tag tag--confirmed" style="font-size: 10px; padding: 2px 8px;">On Track</span>
+                </div>
+                <div class="stat-card__value">73%</div>
+                <div class="progress" style="margin-top: var(--space-sm);">
+                  <div class="progress__fill progress__fill--green" style="width:73%"></div>
+                </div>
+                <div class="stat-card__label" style="margin-top: var(--space-xs);">18 of 25 tasks complete</div>
+              </div>
+
+              <!-- Donut chart variant -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Task Breakdown</span>
+                </div>
+                <div class="stat-card__donut" style="margin-top: var(--space-xs);">
+                  <svg viewBox="0 0 36 36" style="width: 72px; height: 72px; flex-shrink: 0; transform: rotate(-90deg);">
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-border-light)" stroke-width="3"></circle>
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-success)" stroke-width="3" stroke-dasharray="58 97.4" stroke-linecap="round"></circle>
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-secondary)" stroke-width="3" stroke-dasharray="24 97.4" stroke-dashoffset="-58" stroke-linecap="round"></circle>
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-warning)" stroke-width="3" stroke-dasharray="15 97.4" stroke-dashoffset="-82" stroke-linecap="round"></circle>
+                  </svg>
+                  <div class="stat-card__donut-legend">
+                    <div class="stat-card__legend-item">
+                      <span class="stat-card__legend-dot" style="background: var(--color-success);"></span> Done — 60%
+                    </div>
+                    <div class="stat-card__legend-item">
+                      <span class="stat-card__legend-dot" style="background: var(--color-secondary);"></span> In Progress — 25%
+                    </div>
+                    <div class="stat-card__legend-item">
+                      <span class="stat-card__legend-dot" style="background: var(--color-warning);"></span> Blocked — 15%
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Multi-metric with stacked progress -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Storage Used</span>
+                  <span class="stat-card__badge" style="background: var(--color-warning-light); color: var(--color-warning-text);">82%</span>
+                </div>
+                <div class="stat-card__value">41 GB</div>
+                <div class="stat-card__label">of 50 GB</div>
+                <div class="progress" style="margin-top: var(--space-sm);">
+                  <div class="progress__fill progress__fill--orange" style="width:82%"></div>
+                </div>
+                <div class="stat-card__footer" style="display: flex; justify-content: space-between;">
+                  <span>Documents 24 GB</span>
+                  <span>Media 17 GB</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ds-section__subtitle">Detailed — With Avatars, Tags &amp; Inline Charts</div>
+            <div class="stats-grid">
+              <!-- Team members with avatars -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Team Size</span>
+                </div>
+                <div class="stat-card__value">12</div>
+                <div style="display: flex; gap: -4px; margin-top: var(--space-sm);">
+                  <div class="avatar-group" style="display: flex;">
+                    <div class="avatar avatar--xs" style="margin-right: -6px; border: 2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a01.png" alt=""></div>
+                    <div class="avatar avatar--xs" style="margin-right: -6px; border: 2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a05.png" alt=""></div>
+                    <div class="avatar avatar--xs" style="margin-right: -6px; border: 2px solid var(--color-surface);"><img src="../assets/avatars/avatar-b03.png" alt=""></div>
+                    <div class="avatar avatar--xs" style="margin-right: -6px; border: 2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a08.png" alt=""></div>
+                    <div class="avatar avatar--xs" style="border: 2px solid var(--color-surface);"><img src="../assets/avatars/avatar-a15.png" alt=""></div>
+                  </div>
+                  <span style="font-size: var(--text-xs-size); color: var(--color-text-muted); margin-left: var(--space-xs); align-self: center;">+7 more</span>
+                </div>
+              </div>
+
+              <!-- Open issues -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Open Issues</span>
+                  <span class="stat-card__badge" style="background: var(--color-error-light); color: var(--color-error);">
+                    <i data-lucide="trending-up" style="width: 10px; height: 10px; display: inline-block; vertical-align: -1px; margin-right: 2px;"></i>5
+                  </span>
+                </div>
+                <div class="stat-card__value">23</div>
+                <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+                  <span class="tag tag--alert" style="font-size: 10px; padding: 2px 8px;">4 Critical</span>
+                  <span class="tag tag--pending" style="font-size: 10px; padding: 2px 8px;">8 Medium</span>
+                  <span class="tag tag--info" style="font-size: 10px; padding: 2px 8px;">11 Low</span>
+                </div>
+              </div>
+
+              <!-- Uptime -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">Uptime</span>
+                  <span class="tag tag--confirmed" style="font-size: 10px; padding: 2px 8px;">Healthy</span>
+                </div>
+                <div class="stat-card__value">99.98%</div>
+                <div class="stat-card__bars" style="margin-top: var(--space-sm); height: 24px;">
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--muted" style="height:85%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                  <div class="stat-card__bar stat-card__bar--primary" style="height:100%"></div>
+                </div>
+                <div class="stat-card__footer">Last 14 days</div>
+              </div>
+
+              <!-- NPS Score -->
+              <div class="stat-card stat-card--detailed">
+                <div class="stat-card__header">
+                  <span class="stat-card__title">NPS Score</span>
+                  <span class="stat-card__badge" style="background: var(--color-success-light); color: var(--color-success);">
+                    <i data-lucide="trending-up" style="width: 10px; height: 10px; display: inline-block; vertical-align: -1px; margin-right: 2px;"></i>6pts
+                  </span>
+                </div>
+                <div class="stat-card__value">72</div>
+                <div style="display: flex; gap: var(--space-xs); margin-top: var(--space-sm);">
+                  <div style="flex: 7; height: 6px; border-radius: var(--radius-full); background: var(--color-success);"></div>
+                  <div style="flex: 2; height: 6px; border-radius: var(--radius-full); background: var(--color-warning);"></div>
+                  <div style="flex: 1; height: 6px; border-radius: var(--radius-full); background: var(--color-error);"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: var(--space-2xs);">
+                  <span style="font-size: 10px; color: var(--color-success);">70% Promoters</span>
+                  <span style="font-size: 10px; color: var(--color-error);">10% Detractors</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TABLES ── -->
+          <section class="ds-section" id="tables">
+            <h2 class="ds-section__title">Tables</h2>
+            <p class="ds-section__desc">Data tables with user cells, status tags, and row actions. Supports default and striped variants.</p>
+
+            <div class="ds-section__subtitle">Default Table</div>
+            <div class="table-container" style="margin-bottom: var(--space-xl);">
+              <div class="table-container__header">
+                <span class="table-container__title">Team Members</span>
+                <button class="btn btn--primary btn--sm"><i data-lucide="user-plus"></i> Invite</button>
+              </div>
+              <table>
+                <colgroup>
+                  <col style="width: 40%;">
+                  <col style="width: 18%;">
+                  <col style="width: 18%;">
+                  <col style="width: 12%;">
+                  <col style="width: 12%;">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="table-cell-user">
+                        <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a01.png" alt="Sarah Chen"></div>
+                        <div class="table-cell-user__info">
+                          <span class="table-cell-user__name">Sarah Chen</span>
+                          <span class="table-cell-user__meta">sarah@company.com</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Admin</td>
+                    <td><span class="tag tag--confirmed">Active</span></td>
+                    <td style="color: var(--color-text-muted); font-size: var(--text-small-size);">Jan 15, 2025</td>
+                    <td style="text-align: right;">
+                      <div class="table-cell-actions">
+                        <button class="btn btn--outlined btn--tiny">Edit</button>
+                        <button class="btn btn--ghost btn--tiny btn--icon"><i data-lucide="more-horizontal"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-cell-user">
+                        <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-b05.png" alt="Alex Rivera"></div>
+                        <div class="table-cell-user__info">
+                          <span class="table-cell-user__name">Alex Rivera</span>
+                          <span class="table-cell-user__meta">alex@company.com</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Editor</td>
+                    <td><span class="tag tag--pending">Pending</span></td>
+                    <td style="color: var(--color-text-muted); font-size: var(--text-small-size);">Feb 3, 2025</td>
+                    <td style="text-align: right;">
+                      <div class="table-cell-actions">
+                        <button class="btn btn--outlined btn--tiny">Edit</button>
+                        <button class="btn btn--ghost btn--tiny btn--icon"><i data-lucide="more-horizontal"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-cell-user">
+                        <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a08.png" alt="Kim Tanaka"></div>
+                        <div class="table-cell-user__info">
+                          <span class="table-cell-user__name">Kim Tanaka</span>
+                          <span class="table-cell-user__meta">kim@company.com</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Viewer</td>
+                    <td><span class="tag tag--info">Invited</span></td>
+                    <td style="color: var(--color-text-muted); font-size: var(--text-small-size);">Mar 20, 2025</td>
+                    <td style="text-align: right;">
+                      <div class="table-cell-actions">
+                        <button class="btn btn--outlined btn--tiny">Edit</button>
+                        <button class="btn btn--ghost btn--tiny btn--icon"><i data-lucide="more-horizontal"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-cell-user">
+                        <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a15.png" alt="Nadia Osei"></div>
+                        <div class="table-cell-user__info">
+                          <span class="table-cell-user__name">Nadia Osei</span>
+                          <span class="table-cell-user__meta">nadia@company.com</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Design Lead</td>
+                    <td><span class="tag tag--confirmed">Active</span></td>
+                    <td style="color: var(--color-text-muted); font-size: var(--text-small-size);">Nov 8, 2024</td>
+                    <td class="table-cell-actions">
+                      <button class="btn btn--outlined btn--tiny">Edit</button>
+                      <button class="btn btn--ghost btn--tiny btn--icon"><i data-lucide="more-horizontal"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="ds-section__subtitle">Striped Table</div>
+            <div class="table-container">
+              <div class="table-container__header">
+                <span class="table-container__title">Recent Activity</span>
+                <button class="btn btn--outlined btn--sm"><i data-lucide="download"></i> Export</button>
+              </div>
+              <table class="table--striped">
+                <colgroup>
+                  <col style="width: 30%;">
+                  <col style="width: 30%;">
+                  <col style="width: 20%;">
+                  <col style="width: 20%;">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="table-cell-user">
+                        <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-b04.png" alt="Raj Patel"></div>
+                        <span class="table-cell-user__name">Raj Patel</span>
+                      </div>
+                    </td>
+                    <td>Deployed v2.4.1</td>
+                    <td style="color: var(--color-text-secondary);">Production</td>
+                    <td style="color: var(--color-text-muted);">Today, 11:15 AM</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-cell-user">
+                        <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a05.png" alt="Vicente Reyes"></div>
+                        <span class="table-cell-user__name">Vicente Reyes</span>
+                      </div>
+                    </td>
+                    <td>Merged PR #342</td>
+                    <td style="color: var(--color-text-secondary);">Staging</td>
+                    <td style="color: var(--color-text-muted);">Today, 9:40 AM</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-cell-user">
+                        <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a22.png" alt="Lena Kovic"></div>
+                        <span class="table-cell-user__name">Lena Kovic</span>
+                      </div>
+                    </td>
+                    <td>Updated permissions</td>
+                    <td style="color: var(--color-text-secondary);">Admin Panel</td>
+                    <td style="color: var(--color-text-muted);">Yesterday, 4:20 PM</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── AVATARS ── -->
+          <section class="ds-section" id="avatars">
+            <h2 class="ds-section__title">Avatars</h2>
+            <p class="ds-section__desc">Photo and initial avatars in six sizes. Gradient variants for initials. Group display with overflow count.</p>
+
+            <div class="comp-label">Sizes</div>
+            <div class="comp-row">
+              <div class="avatar avatar--xs"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+              <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+              <div class="avatar avatar--md"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+              <div class="avatar avatar--lg"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+              <div class="avatar avatar--xl"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+              <div class="avatar avatar--xxl"><img src="../assets/avatars/avatar-a03.png" alt=""></div>
+            </div>
+
+            <div class="comp-label">Initials (Gradient Variants)</div>
+            <div class="comp-row">
+              <div class="avatar avatar--md avatar--a">JD</div>
+              <div class="avatar avatar--md avatar--b">KL</div>
+              <div class="avatar avatar--md avatar--c">MN</div>
+              <div class="avatar avatar--md avatar--d">OP</div>
+              <div class="avatar avatar--md avatar--e">QR</div>
+              <div class="avatar avatar--md avatar--f">ST</div>
+            </div>
+
+            <div class="comp-label">Avatar Group</div>
+            <div class="comp-row">
+              <div class="avatar-group">
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a01.png" alt=""></div>
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a05.png" alt=""></div>
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-b03.png" alt=""></div>
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a12.png" alt=""></div>
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-b08.png" alt=""></div>
+                <span class="avatar-group__count">+7</span>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── PAGINATION ── -->
+          <section class="ds-section" id="pagination">
+            <h2 class="ds-section__title">Pagination</h2>
+            <p class="ds-section__desc">Page navigation with numbered items, prev/next buttons, and ellipsis.</p>
+            <div class="pagination">
+              <button class="pagination__btn"><i data-lucide="chevron-left"></i> <span class="pagination__btn-text">Previous</span></button>
+              <a class="pagination__item">1</a>
+              <a class="pagination__item">2</a>
+              <a class="pagination__item pagination__item--active">3</a>
+              <a class="pagination__item">4</a>
+              <span class="pagination__ellipsis">...</span>
+              <a class="pagination__item">12</a>
+              <button class="pagination__btn"><span class="pagination__btn-text">Next</span> <i data-lucide="chevron-right"></i></button>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── PROGRESS ── -->
+          <section class="ds-section" id="progress">
+            <h2 class="ds-section__title">Progress Bars</h2>
+            <p class="ds-section__desc">Simple progress indicators in three color variants.</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-md); max-width: 480px;">
+              <div><div style="font-size: var(--text-small-size); color: var(--color-text-secondary); margin-bottom: var(--space-2xs);">Design — 85%</div><div class="progress"><div class="progress__fill progress__fill--blue" style="width:85%"></div></div></div>
+              <div><div style="font-size: var(--text-small-size); color: var(--color-text-secondary); margin-bottom: var(--space-2xs);">Development — 52%</div><div class="progress"><div class="progress__fill progress__fill--green" style="width:52%"></div></div></div>
+              <div><div style="font-size: var(--text-small-size); color: var(--color-text-secondary); margin-bottom: var(--space-2xs);">Testing — 20%</div><div class="progress"><div class="progress__fill progress__fill--orange" style="width:20%"></div></div></div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TOOLTIPS ── -->
+          <section class="ds-section" id="tooltips">
+            <h2 class="ds-section__title">Tooltips</h2>
+            <p class="ds-section__desc">Small floating labels on hover with four directional variants. Dark background with white text and arrow indicator.</p>
+
+            <div class="comp-row" style="gap: var(--space-3xl); padding: var(--space-xl) var(--space-lg);">
+              <span class="tooltip-wrap">
+                <span class="tooltip tooltip--top">Tooltip on top</span>
+                <button class="btn btn--outlined btn--sm">Top</button>
+              </span>
+              <span class="tooltip-wrap">
+                <span class="tooltip tooltip--bottom">Tooltip on bottom</span>
+                <button class="btn btn--outlined btn--sm">Bottom</button>
+              </span>
+              <span class="tooltip-wrap">
+                <span class="tooltip tooltip--left">Tooltip on left</span>
+                <button class="btn btn--outlined btn--sm">Left</button>
+              </span>
+              <span class="tooltip-wrap">
+                <span class="tooltip tooltip--right">Tooltip on right</span>
+                <button class="btn btn--outlined btn--sm">Right</button>
+              </span>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── FORMS ── -->
+          <section class="ds-section" id="forms">
+            <h2 class="ds-section__title">Form Fields</h2>
+            <p class="ds-section__desc">Text inputs, selects, textareas, checkboxes, and radio buttons with validation states.</p>
+
+            <div class="comp-grid--2" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
+              <div>
+                <div class="form-field">
+                  <label class="form-field__label">Full name</label>
+                  <input type="text" class="form-field__input" placeholder="Jane Doe">
+                </div>
+                <div class="form-field">
+                  <div class="form-field__label-row">
+                    <label class="form-field__label">Password</label>
+                    <a class="form-field__label-link">Forgot?</a>
+                  </div>
+                  <div class="form-field__input-wrapper">
+                    <input type="password" class="form-field__input" value="secretpassword">
+                    <span class="form-field__input-icon"><i data-lucide="eye-off"></i></span>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label class="form-field__label">Role</label>
+                  <select class="form-field__input"><option>Select a role...</option><option>Admin</option><option>Editor</option><option>Viewer</option></select>
+                </div>
+              </div>
+              <div>
+                <div class="form-field">
+                  <label class="form-field__label">Email</label>
+                  <input type="email" class="form-field__input form-field__input--error" value="invalid-email">
+                  <div class="form-field__error">Please enter a valid email address</div>
+                </div>
+                <div class="form-field">
+                  <label class="form-field__label">Bio</label>
+                  <textarea class="form-field__input" placeholder="Tell us about yourself..." rows="3"></textarea>
+                  <div class="form-field__hint">Max 200 characters</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="comp-label">Checkboxes &amp; Radios</div>
+            <div style="display: flex; gap: var(--space-2xl); flex-wrap: wrap;">
+              <div class="form-check-group">
+                <label class="form-checkbox"><input type="checkbox" checked><span>Option one</span></label>
+                <label class="form-checkbox"><input type="checkbox"><span>Option two</span></label>
+                <label class="form-checkbox"><input type="checkbox" disabled><span>Disabled</span></label>
+              </div>
+              <div class="form-check-group">
+                <label class="form-radio"><input type="radio" name="demo-radio" checked><span>Choice A</span></label>
+                <label class="form-radio"><input type="radio" name="demo-radio"><span>Choice B</span></label>
+                <label class="form-radio"><input type="radio" name="demo-radio"><span>Choice C</span></label>
+              </div>
+            </div>
+
+            <div class="comp-label">Tag Input</div>
+            <div style="max-width: 480px;">
+              <div class="tag-input__label">Skills</div>
+              <div class="tag-input">
+                <span class="tag tag--removable">React <button class="tag__remove"><i data-lucide="x"></i></button></span>
+                <span class="tag tag--removable">TypeScript <button class="tag__remove"><i data-lucide="x"></i></button></span>
+                <span class="tag tag--removable">Node.js <button class="tag__remove"><i data-lucide="x"></i></button></span>
+                <input type="text" class="tag-input__field" placeholder="Add a skill...">
+              </div>
+            </div>
+
+            <div class="comp-label">Number Stepper</div>
+            <div class="comp-row">
+              <div class="number-stepper">
+                <button class="number-stepper__btn">−</button>
+                <input type="number" class="number-stepper__value" value="3" min="0" max="10">
+                <button class="number-stepper__btn">+</button>
+              </div>
+            </div>
+
+            <div class="comp-label">Password Strength</div>
+            <div style="max-width: 320px;">
+              <div class="form-field">
+                <label class="form-field__label">Password</label>
+                <input type="password" class="form-field__input" value="P@ssw0rd123">
+              </div>
+              <div class="password-strength">
+                <div class="password-strength__bar">
+                  <div class="password-strength__segment password-strength__segment--filled"></div>
+                  <div class="password-strength__segment password-strength__segment--filled"></div>
+                  <div class="password-strength__segment password-strength__segment--success"></div>
+                  <div class="password-strength__segment"></div>
+                </div>
+                <span class="password-strength__label">Good</span>
+              </div>
+              <ul class="validation-checklist">
+                <li class="validation-checklist__item validation-checklist__item--pass"><i data-lucide="check"></i> At least 8 characters</li>
+                <li class="validation-checklist__item validation-checklist__item--pass"><i data-lucide="check"></i> Contains a number</li>
+                <li class="validation-checklist__item validation-checklist__item--pass"><i data-lucide="check"></i> Contains a special character</li>
+                <li class="validation-checklist__item validation-checklist__item--fail"><i data-lucide="x"></i> Contains uppercase letter</li>
+              </ul>
+            </div>
+
+            <div class="comp-label">Form Chips</div>
+            <div style="max-width: 400px;">
+              <div class="form-chips">
+                <span class="form-chip form-chip--selected"><i data-lucide="check"></i> Design</span>
+                <span class="form-chip">Engineering</span>
+                <span class="form-chip form-chip--selected"><i data-lucide="check"></i> Marketing</span>
+                <span class="form-chip">Sales</span>
+                <span class="form-chip">Support</span>
+                <span class="form-chip form-chip--selected"><i data-lucide="check"></i> Product</span>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── RANGE SLIDERS ── -->
+          <section class="ds-section" id="range-sliders">
+            <h2 class="ds-section__title">Range Sliders</h2>
+            <p class="ds-section__desc">Range inputs with track fill, optional tick marks, and dark/accent variants. Supports label and value display.</p>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-xl); max-width: 480px;">
+              <div>
+                <div class="comp-label" style="margin-top: 0;">Default</div>
+                <div class="range-slider">
+                  <div class="range-slider__label-row">
+                    <span class="range-slider__label">Volume</span>
+                    <span class="range-slider__value-display">50%</span>
+                  </div>
+                  <div class="range-slider__track-wrapper">
+                    <div class="range-slider__track">
+                      <div class="range-slider__track-fill" style="width: 50%"></div>
+                    </div>
+                    <input type="range" class="range-slider__input" min="0" max="100" value="50">
+                  </div>
+                  <div class="range-slider__bounds">
+                    <span class="range-slider__bound">0</span>
+                    <span class="range-slider__bound">100</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="comp-label" style="margin-top: 0;">Dark Variant</div>
+                <div class="range-slider range-slider--dark">
+                  <div class="range-slider__label-row">
+                    <span class="range-slider__label">Brightness</span>
+                    <span class="range-slider__value-display">75%</span>
+                  </div>
+                  <div class="range-slider__track-wrapper">
+                    <div class="range-slider__track">
+                      <div class="range-slider__track-fill" style="width: 75%"></div>
+                    </div>
+                    <input type="range" class="range-slider__input" min="0" max="100" value="75">
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="comp-label" style="margin-top: 0;">Accent Variant with Ticks</div>
+                <div class="range-slider range-slider--accent">
+                  <div class="range-slider__track-wrapper">
+                    <div class="range-slider__track">
+                      <div class="range-slider__track-fill" style="width: 30%"></div>
+                    </div>
+                    <div class="range-slider__ticks">
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                      <span class="range-slider__tick"></span>
+                    </div>
+                    <input type="range" class="range-slider__input" min="0" max="100" value="30">
+                  </div>
+                  <div class="range-slider__bounds">
+                    <span class="range-slider__bound">0</span>
+                    <span class="range-slider__bound">100</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── ALERTS ── -->
+          <section class="ds-section" id="alerts">
+            <h2 class="ds-section__title">Alerts</h2>
+            <p class="ds-section__desc">Contextual messages for success, error, warning, and informational states.</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-md); max-width: 560px;">
+              <div class="alert alert--success"><div class="alert__icon"><i data-lucide="check"></i></div><div class="alert__body"><div class="alert__title">Changes saved</div><div class="alert__desc">Your profile has been updated successfully.</div></div><button class="alert__close"><i data-lucide="x"></i></button></div>
+              <div class="alert alert--error"><div class="alert__icon"><i data-lucide="x"></i></div><div class="alert__body"><div class="alert__title">Upload failed</div><div class="alert__desc">The file exceeds the 10MB size limit.</div></div><button class="alert__close"><i data-lucide="x"></i></button></div>
+              <div class="alert alert--warning"><div class="alert__icon"><i data-lucide="alert-triangle"></i></div><div class="alert__body"><div class="alert__title">Approaching limit</div><div class="alert__desc">You've used 90% of your storage quota.</div></div><button class="alert__close"><i data-lucide="x"></i></button></div>
+              <div class="alert alert--info"><div class="alert__icon"><i data-lucide="info"></i></div><div class="alert__body"><div class="alert__title">New version available</div><div class="alert__desc">v2.4 includes 6 new components. <a href="#">View changelog</a></div></div><button class="alert__close"><i data-lucide="x"></i></button></div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TOASTS ── -->
+          <section class="ds-section" id="toasts">
+            <h2 class="ds-section__title">Toasts</h2>
+            <p class="ds-section__desc">Notification toasts in light and dark themes with semantic variants.</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-md); max-width: 420px;">
+              <div class="toast toast--success"><div class="toast__icon"><i data-lucide="check-circle"></i></div><div class="toast__content"><div class="toast__title">File uploaded</div><div class="toast__desc">report-q4.pdf was uploaded successfully.</div></div><button class="toast__close"><i data-lucide="x"></i></button></div>
+              <div class="toast toast--error"><div class="toast__icon"><i data-lucide="alert-circle"></i></div><div class="toast__content"><div class="toast__title">Connection lost</div><div class="toast__desc">Attempting to reconnect...</div></div><button class="toast__close"><i data-lucide="x"></i></button></div>
+              <div class="toast toast--dark toast--info"><div class="toast__icon"><i data-lucide="info"></i></div><div class="toast__content"><div class="toast__title">Sync complete</div><div class="toast__desc">All changes have been synced.</div><div class="toast__actions"><a class="toast__link toast__link--bold">View details <i data-lucide="arrow-right"></i></a><a class="toast__link">Dismiss</a></div></div><button class="toast__close"><i data-lucide="x"></i></button></div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── MODALS ── -->
+          <section class="ds-section" id="modals">
+            <h2 class="ds-section__title">Modals</h2>
+            <p class="ds-section__desc">Dialog boxes for confirmations, forms, and selections. Shown inline here for preview.</p>
+            <div class="comp-label">Confirm Dialogs</div>
+            <div class="comp-grid--2 modal-preview" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl);">
+              <div class="modal modal--inline">
+                <button class="modal__close"><i data-lucide="x"></i></button>
+                <div class="modal__body">
+                  <div class="modal-confirm__icon modal-confirm__icon--warning"><i data-lucide="alert-triangle"></i></div>
+                  <div class="modal-confirm__title">Delete project?</div>
+                  <div class="modal-confirm__desc">This action cannot be undone. All data associated with this project will be permanently removed.</div>
+                </div>
+                <div class="modal__footer">
+                  <button class="btn btn--ghost btn--sm">Cancel</button>
+                  <button class="btn btn--error btn--sm">Delete</button>
+                </div>
+              </div>
+              <div class="modal modal--inline">
+                <button class="modal__close"><i data-lucide="x"></i></button>
+                <div class="modal__body">
+                  <div class="modal-confirm__icon modal-confirm__icon--success"><i data-lucide="check"></i></div>
+                  <div class="modal-confirm__title">Payment received</div>
+                  <div class="modal-confirm__desc">Your payment of $49.00 has been processed successfully. A receipt has been sent to your email.</div>
+                </div>
+                <div class="modal__footer">
+                  <button class="btn btn--primary btn--sm btn--full">Done</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="comp-label">Profile Permissions Modal</div>
+            <div class="modal-preview" style="max-width: 420px; margin-bottom: var(--space-xl);">
+              <div class="modal modal--inline">
+                <button class="modal__close"><i data-lucide="x"></i></button>
+                <div class="modal__body modal-profile">
+                  <div class="modal-profile__header">
+                    <img src="../assets/avatars/avatar-a05.png" alt="Vicente Reyes" class="modal-profile__avatar">
+                    <div>
+                      <div class="modal-profile__name">Vicente Reyes</div>
+                      <div class="modal-profile__role">Product Designer</div>
+                    </div>
+                  </div>
+                  <div class="modal-profile__section-label">Permissions</div>
+                  <div class="modal-profile__permissions">
+                    <label class="modal-profile__perm-item">
+                      <span class="modal-profile__check modal-profile__check--active"><i data-lucide="check"></i></span>
+                      Can edit documents
+                    </label>
+                    <label class="modal-profile__perm-item">
+                      <span class="modal-profile__check modal-profile__check--active"><i data-lucide="check"></i></span>
+                      Can manage team
+                    </label>
+                    <label class="modal-profile__perm-item">
+                      <span class="modal-profile__check"><i data-lucide="check"></i></span>
+                      Can delete projects
+                    </label>
+                  </div>
+                </div>
+                <div class="modal__footer">
+                  <button class="btn btn--ghost btn--sm">Cancel</button>
+                  <button class="btn btn--primary btn--sm">Save Changes</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="comp-label">Location Selection Modal</div>
+            <div class="modal-preview" style="max-width: 480px;">
+              <div class="modal modal--inline">
+                <button class="modal__close"><i data-lucide="x"></i></button>
+                <div class="modal__body">
+                  <div class="modal-location__title">Choose your region</div>
+                  <div class="modal-location__desc">Select the region closest to you for the best experience.</div>
+                  <div class="modal-location__grid">
+                    <div class="modal-location__card modal-location__card--selected">
+                      <div class="modal-location__card-icon"><i data-lucide="globe"></i></div>
+                      <div class="modal-location__card-name">North America</div>
+                    </div>
+                    <div class="modal-location__card">
+                      <div class="modal-location__card-icon"><i data-lucide="globe"></i></div>
+                      <div class="modal-location__card-name">Europe</div>
+                    </div>
+                    <div class="modal-location__card">
+                      <div class="modal-location__card-icon"><i data-lucide="globe"></i></div>
+                      <div class="modal-location__card-name">Asia Pacific</div>
+                    </div>
+                    <div class="modal-location__card">
+                      <div class="modal-location__card-icon"><i data-lucide="globe"></i></div>
+                      <div class="modal-location__card-name">South America</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal__footer">
+                  <button class="btn btn--primary btn--sm btn--full">Confirm Region</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── EMPTY STATES ── -->
+          <section class="ds-section" id="empty">
+            <h2 class="ds-section__title">Empty States</h2>
+            <p class="ds-section__desc">Placeholder content for empty views with optional icons, actions, and semantic color tints.</p>
+
+            <div class="ds-section__subtitle">Default &amp; Bordered</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl);">
+              <div class="comp-box">
+                <div class="empty-state">
+                  <div class="empty-state__icon"><i data-lucide="inbox"></i></div>
+                  <h3 class="empty-state__title">No messages</h3>
+                  <p class="empty-state__desc">Your inbox is empty. New messages will appear here.</p>
+                  <button class="btn btn--primary btn--sm">Compose</button>
+                </div>
+              </div>
+              <div class="empty-state empty-state--bordered">
+                <div class="empty-state__icon"><i data-lucide="upload-cloud"></i></div>
+                <h3 class="empty-state__title">No files uploaded</h3>
+                <p class="empty-state__desc">Drag and drop files here, or click to browse.</p>
+                <button class="btn btn--outlined btn--sm">Browse Files</button>
+              </div>
+            </div>
+
+            <div class="ds-section__subtitle">Compact with Icon Tints</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg);">
+              <div class="comp-box">
+                <div class="empty-state empty-state--compact empty-state--info">
+                  <div class="empty-state__icon"><i data-lucide="calendar-days"></i></div>
+                  <h3 class="empty-state__title">No upcoming events</h3>
+                  <p class="empty-state__desc">Your schedule is clear. Events will appear here once booked.</p>
+                </div>
+              </div>
+              <div class="comp-box">
+                <div class="empty-state empty-state--compact empty-state--success">
+                  <div class="empty-state__icon"><i data-lucide="check-circle"></i></div>
+                  <h3 class="empty-state__title">All caught up</h3>
+                  <p class="empty-state__desc">You've resolved every notification. New alerts will appear here.</p>
+                </div>
+              </div>
+              <div class="comp-box">
+                <div class="empty-state empty-state--compact empty-state--warning">
+                  <div class="empty-state__icon"><i data-lucide="alert-triangle"></i></div>
+                  <h3 class="empty-state__title">Setup incomplete</h3>
+                  <p class="empty-state__desc">Finish configuring this integration to start receiving data.</p>
+                  <button class="btn btn--primary btn--sm">Complete Setup</button>
+                </div>
+              </div>
+              <div class="comp-box">
+                <div class="empty-state empty-state--compact empty-state--error">
+                  <div class="empty-state__icon"><i data-lucide="wifi-off"></i></div>
+                  <h3 class="empty-state__title">Unable to load data</h3>
+                  <p class="empty-state__desc">Something went wrong. Check your connection and try again.</p>
+                  <button class="btn btn--outlined btn--sm"><i data-lucide="refresh-cw"></i> Retry</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── HEROES ── -->
+          <section class="ds-section" id="heroes">
+            <h2 class="ds-section__title">Heroes</h2>
+            <p class="ds-section__desc">Six hero variants for page headers, profiles, announcements, and feature highlights.</p>
+
+            <div class="comp-label">Dark Banner</div>
+            <div class="hero hero--dark" style="margin-bottom: var(--space-xl);">
+              <div class="hero__content">
+                <span class="hero__tag"><i data-lucide="sparkles"></i> New Release</span>
+                <h3 class="hero__title">Build faster with components</h3>
+                <p class="hero__desc">Production-ready UI components designed for modern web applications.</p>
+                <div class="hero__actions">
+                  <button class="btn btn--primary btn--md">Get Started</button>
+                  <button class="btn btn--ghost btn--md" style="border-color: var(--white-alpha-20); color: var(--color-white);">Learn More</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="comp-label">Centered</div>
+            <div class="hero hero--centered" style="margin-bottom: var(--space-xl);">
+              <div class="hero__icon-row">
+                <div class="hero__icon-dot hero__icon-dot--blue"><i data-lucide="layout-grid"></i></div>
+                <div class="hero__icon-dot hero__icon-dot--orange"><i data-lucide="palette"></i></div>
+                <div class="hero__icon-dot hero__icon-dot--green"><i data-lucide="check-circle"></i></div>
+              </div>
+              <h3 class="hero__title">Everything you need in one system</h3>
+              <p class="hero__desc">Tokens, components, and patterns designed to work together seamlessly.</p>
+              <div class="hero__actions">
+                <button class="btn btn--primary btn--md">Browse Components</button>
+                <button class="btn btn--outlined btn--md">View Tokens</button>
+              </div>
+            </div>
+
+            <div class="comp-label">Compact</div>
+            <div class="hero hero--compact">
+              <div class="hero__content">
+                <h3 class="hero__title">Sprint 24 Planning</h3>
+                <p class="hero__desc">Review priorities and assign tasks for the upcoming two-week cycle.</p>
+              </div>
+              <div class="hero__actions">
+                <button class="btn btn--primary btn--sm">Start Planning</button>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── PAGE HEADER ── -->
+          <section class="ds-section" id="page-header">
+            <h2 class="ds-section__title">Page Header</h2>
+            <p class="ds-section__desc">Composable page header with breadcrumbs, title, actions, search controls, and tabs. Mix and match slots for listing or detail pages.</p>
+
+            <div class="comp-label">With Breadcrumbs + Actions</div>
+            <div class="page-header" style="margin-bottom: var(--space-xl);">
+              <div class="page-header__inner">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                  <a href="#" class="breadcrumbs__item">Home</a>
+                  <span class="breadcrumbs__sep"><i data-lucide="chevron-right"></i></span>
+                  <a href="#" class="breadcrumbs__item">Projects</a>
+                  <span class="breadcrumbs__sep"><i data-lucide="chevron-right"></i></span>
+                  <span class="breadcrumbs__item breadcrumbs__item--current">Q4 Campaign</span>
+                </nav>
+                <div class="page-header__title-row">
+                  <div class="page-header__title-group">
+                    <h1 class="page-header__title" style="font-size: var(--text-h1-size);">Q4 Campaign</h1>
+                    <p class="page-header__subtitle">Plan and execute the end-of-year marketing push.</p>
+                  </div>
+                  <div class="page-header__actions">
+                    <button class="btn btn--ghost btn--md"><i data-lucide="settings"></i> Manage</button>
+                    <button class="btn btn--primary btn--md"><i data-lucide="plus"></i> Create</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="comp-label">Detail Page with Meta + Tabs</div>
+            <div class="page-header">
+              <div class="page-header__inner">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                  <a href="#" class="breadcrumbs__item">Home</a>
+                  <span class="breadcrumbs__sep"><i data-lucide="chevron-right"></i></span>
+                  <a href="#" class="breadcrumbs__item">Events</a>
+                  <span class="breadcrumbs__sep"><i data-lucide="chevron-right"></i></span>
+                  <span class="breadcrumbs__item breadcrumbs__item--current">Design Conference</span>
+                </nav>
+                <div class="page-header__title-row">
+                  <div class="page-header__title-group">
+                    <h1 class="page-header__title" style="font-size: var(--text-h1-size);">Design Conference 2026</h1>
+                    <div class="page-header__meta">
+                      <span class="page-header__meta-item"><i data-lucide="calendar"></i> Mar 28, 2026</span>
+                      <span class="page-header__meta-item"><i data-lucide="map-pin"></i> Room 4B</span>
+                      <span class="tag tag--confirmed">Confirmed</span>
+                    </div>
+                  </div>
+                  <div class="page-header__actions">
+                    <button class="btn btn--outlined btn--md"><i data-lucide="share-2"></i> Share</button>
+                    <button class="btn btn--primary btn--md"><i data-lucide="ticket"></i> Register</button>
+                  </div>
+                </div>
+              </div>
+              <div class="page-header__tabs">
+                <div class="content-tabs">
+                  <a href="#" class="content-tabs__item content-tabs__item--active">Overview</a>
+                  <a href="#" class="content-tabs__item">Schedule</a>
+                  <a href="#" class="content-tabs__item">Attendees</a>
+                  <a href="#" class="content-tabs__item">Discussion</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── CONTENT SECTIONS ── -->
+          <section class="ds-section" id="content-sections">
+            <h2 class="ds-section__title">Content Sections</h2>
+            <p class="ds-section__desc">Text content blocks for detail pages with section headings, body text, and feature checklists.</p>
+
+            <div style="max-width: 640px;">
+              <div class="content-section">
+                <h2 class="content-section__title">What's on?</h2>
+                <div class="content-section__body">
+                  <p>Design is the face of a brand. It showcases its personality and highlights the values the brand stands for — sometimes with just a few digital brushstrokes. This workshop will teach you how to create stunning visuals that communicate effectively.</p>
+                  <p>Join us for an immersive two-day experience covering everything from concept development to final delivery. You'll work alongside industry professionals and leave with a polished portfolio piece.</p>
+                </div>
+              </div>
+
+              <div class="content-section">
+                <h2 class="content-section__title">What You'll Learn</h2>
+                <ul class="checklist">
+                  <li class="checklist__item"><i data-lucide="check" class="checklist__icon"></i><span>Illustrator Features</span></li>
+                  <li class="checklist__item"><i data-lucide="check" class="checklist__icon"></i><span>Inspiration gathering</span></li>
+                  <li class="checklist__item"><i data-lucide="check" class="checklist__icon"></i><span>File Handoff</span></li>
+                  <li class="checklist__item"><i data-lucide="check" class="checklist__icon"></i><span>Design tips and tricks</span></li>
+                  <li class="checklist__item"><i data-lucide="check" class="checklist__icon"></i><span>Client relations</span></li>
+                  <li class="checklist__item"><i data-lucide="check" class="checklist__icon"></i><span>Sketching</span></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── FILTER BAR ── -->
+          <section class="ds-section" id="filter-bar">
+            <h2 class="ds-section__title">Filter Bar</h2>
+            <p class="ds-section__desc">Page-level toolbars for searching, filtering, and sorting. Available in standard, compact, and borderless variants.</p>
+
+            <div class="comp-label">Standard — Date Range + Filters</div>
+            <div class="filter-bar" role="search" style="margin-bottom: var(--space-xl);">
+              <div class="filter-bar__top">
+                <h1 class="filter-bar__title" style="font-size: var(--text-h2-size);">Bookings</h1>
+                <div class="view-toggle" role="tablist">
+                  <button class="view-toggle__item view-toggle__item--active" aria-pressed="true">
+                    <i data-lucide="layout-grid"></i> <span>Grid</span>
+                  </button>
+                  <button class="view-toggle__item" aria-pressed="false">
+                    <i data-lucide="calendar"></i> <span>Calendar</span>
+                  </button>
+                </div>
+              </div>
+              <div class="filter-bar__bottom">
+                <div class="filter-bar__date">
+                  <span class="filter-bar__date-label">From</span>
+                  <input type="date" class="filter-bar__date-input" value="2026-03-21">
+                </div>
+                <div class="filter-bar__date">
+                  <span class="filter-bar__date-label">To</span>
+                  <input type="date" class="filter-bar__date-input" value="2026-03-28">
+                </div>
+                <button class="filter-bar__filter-btn">
+                  <i data-lucide="sliders-horizontal"></i> Filters <span class="filter-bar__badge">3</span>
+                </button>
+                <button class="btn btn--primary btn--md"><i data-lucide="search"></i> Apply</button>
+              </div>
+            </div>
+
+            <div class="comp-label">Compact — Embeddable</div>
+            <div class="filter-bar filter-bar--compact" role="search" style="margin-bottom: var(--space-xl);">
+              <div class="filter-bar__bottom">
+                <div class="filter-bar__search-wrap" style="flex: 1; position: relative;">
+                  <span class="filter-bar__search-icon" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;"><i data-lucide="search"></i></span>
+                  <input type="text" class="filter-bar__search-input" placeholder="Search..." style="padding-left: 36px; width: 100%; height: 40px; border: var(--border-width) var(--border-style) var(--color-border); border-radius: var(--radius-md); font-family: var(--font-body); font-size: var(--text-body-size); background: var(--color-bg);">
+                </div>
+                <div class="pill-filter">
+                  <button class="pill-filter__item pill-filter__item--active">All</button>
+                  <button class="pill-filter__item">Open</button>
+                  <button class="pill-filter__item">Closed</button>
+                </div>
+                <button class="filter-bar__filter-btn">
+                  <i data-lucide="sliders-horizontal"></i> Filters
+                </button>
+              </div>
+            </div>
+
+            <div class="comp-label">With Active Filter Tags</div>
+            <div class="filter-bar" role="search">
+              <div class="filter-bar__top">
+                <h1 class="filter-bar__title" style="font-size: var(--text-h2-size);">Events</h1>
+                <button class="btn btn--primary btn--md"><i data-lucide="plus"></i> Create Event</button>
+              </div>
+              <div class="filter-bar__bottom">
+                <div class="filter-bar__search-wrap" style="flex: 1; position: relative;">
+                  <span class="filter-bar__search-icon" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;"><i data-lucide="search"></i></span>
+                  <input type="text" class="filter-bar__search-input" placeholder="Search events..." style="padding-left: 36px; width: 100%; height: 40px; border: var(--border-width) var(--border-style) var(--color-border); border-radius: var(--radius-md); font-family: var(--font-body); font-size: var(--text-body-size); background: var(--color-bg);">
+                </div>
+                <button class="filter-bar__filter-btn filter-bar__filter-btn--active">
+                  <i data-lucide="sliders-horizontal"></i> Filters <span class="filter-bar__badge">4</span>
+                </button>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-md); align-items: center;">
+                <span style="font-size: var(--text-xs-size); color: var(--color-text-muted); font-weight: 500;">Active:</span>
+                <span class="tag tag--confirmed"><i data-lucide="check-circle-2"></i> Confirmed</span>
+                <span class="tag tag--info"><i data-lucide="tag"></i> Workshop</span>
+                <span class="tag tag--pending"><i data-lucide="calendar"></i> Mar 21 – 28</span>
+                <button style="font-size: var(--text-xs-size); color: var(--color-secondary); background: none; border: none; cursor: pointer; font-family: var(--font-body); text-decoration: underline;">Clear all</button>
+              </div>
+              <div style="font-size: var(--text-small-size); color: var(--color-text-muted); margin-top: var(--space-sm);">Showing 12 of 48 events</div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── SCHEDULE CARD ── -->
+          <section class="ds-section" id="schedule-card">
+            <h2 class="ds-section__title">Schedule Card</h2>
+            <p class="ds-section__desc">Day-view card with meetings, events, and absences. Sections use colored headers — green for important, grey for standard. Meetings have a left border accent.</p>
+
+            <div style="max-width: 480px;">
+              <div class="day-card">
+                <div class="day-card__header">
+                  <div class="day-card__date-wrapper">
+                    <div class="day-card__date-icon"><i data-lucide="calendar"></i></div>
+                    <h2 class="day-card__date">March 23, 2026</h2>
+                  </div>
+                  <button class="day-card__more" aria-label="More options">
+                    <i data-lucide="more-horizontal"></i>
+                  </button>
+                </div>
+
+                <div class="day-card__section">
+                  <div class="section-header section-header--important">
+                    <span class="section-header__label">Important (1)</span>
+                    <i data-lucide="alert-circle" class="section-header__icon"></i>
+                  </div>
+                  <div class="event-row">
+                    <div class="event-row__left">
+                      <img class="event-row__avatar" src="../assets/avatars/avatar-b12.png" alt="Kai Nakamura">
+                      <div>
+                        <span class="event-row__name">Kai Nakamura</span>
+                        <div class="event-row__desc">Final day before parental leave</div>
+                      </div>
+                    </div>
+                    <span class="event-badge event-badge--vacation"><i data-lucide="palm-tree"></i> Leave</span>
+                  </div>
+                </div>
+
+                <div class="day-card__section">
+                  <div class="section-header section-header--meetings">
+                    <span class="section-header__label">Meetings (2)</span>
+                    <i data-lucide="video" class="section-header__icon"></i>
+                  </div>
+                  <div class="meeting-item">
+                    <div class="meeting-item__title">Stakeholder Review</div>
+                    <div class="meeting-item__time">11:00 am <span class="meeting-item__sep">—</span> 12:00 pm</div>
+                  </div>
+                  <div class="meeting-item">
+                    <div class="meeting-item__title">Design Critique — Q2 Layouts</div>
+                    <div class="meeting-item__time">3:00 pm <span class="meeting-item__sep">—</span> 4:00 pm</div>
+                  </div>
+                </div>
+
+                <div class="day-card__section">
+                  <div class="section-header section-header--events">
+                    <span class="section-header__label">Events (1)</span>
+                    <i data-lucide="party-popper" class="section-header__icon"></i>
+                  </div>
+                  <div class="event-row">
+                    <div class="event-row__left">
+                      <img class="event-row__avatar" src="../assets/avatars/avatar-a15.png" alt="Nadia Osei">
+                      <div>
+                        <span class="event-row__name">Nadia Osei</span>
+                        <div class="event-row__desc">Turning 30 — team cake at 3pm</div>
+                      </div>
+                    </div>
+                    <span class="event-badge event-badge--birthday"><i data-lucide="cake"></i> Birthday</span>
+                  </div>
+                </div>
+
+                <div class="day-card__section">
+                  <div class="section-header section-header--absences">
+                    <span class="section-header__label">Absences (5)</span>
+                    <i data-lucide="calendar-x" class="section-header__icon"></i>
+                  </div>
+                  <div class="absence-row">
+                    <div class="absence-row__left">
+                      <div class="avatar-group" style="display: flex; align-items: center;">
+                        <img class="avatar-group__item" src="../assets/avatars/avatar-b03.png" alt="User">
+                        <img class="avatar-group__item" src="../assets/avatars/avatar-a08.png" alt="User">
+                        <span class="avatar-group__initials avatar-group__initials--orange">HG</span>
+                        <span class="avatar-group__count" style="margin-left: -8px;">+2</span>
+                      </div>
+                    </div>
+                    <span class="event-badge event-badge--holiday"><i data-lucide="snowflake"></i> Public Holiday</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TASK LIST ── -->
+          <section class="ds-section" id="task-list">
+            <h2 class="ds-section__title">Task List</h2>
+            <p class="ds-section__desc">Kanban-style columns with priority-coded task cards. Each card shows a color bar, category, assignees, stats, and due date.</p>
+
+            <div style="display: flex; gap: var(--space-xl); overflow-x: auto; padding-bottom: var(--space-md);">
+              <!-- Column 1: Backlog -->
+              <div class="task-list">
+                <div class="task-list__header">
+                  <div class="task-list__header-left">
+                    <span class="task-list__indicator"></span>
+                    <h3 class="task-list__title">Backlog</h3>
+                  </div>
+                  <div class="task-list__header-actions">
+                    <button class="task-list__action" aria-label="Add task"><i data-lucide="plus"></i></button>
+                    <button class="task-list__action" aria-label="More options"><i data-lucide="more-horizontal"></i></button>
+                  </div>
+                </div>
+                <div class="task-list__meta">
+                  <span class="task-list__count">2 Tasks</span>
+                  <span class="task-list__updated">Updated 4h ago</span>
+                </div>
+                <div class="task-list__cards">
+                  <article class="task-card">
+                    <div class="task-card__color-bar task-card__color-bar--low"></div>
+                    <div class="task-card__body">
+                      <span class="task-card__category task-card__category--low">Low Priority</span>
+                      <h4 class="task-card__title">Review Pull Requests</h4>
+                      <p class="task-card__desc">Reviewing incoming code changes for quality and consistency.</p>
+                      <div class="task-card__assignees-row">
+                        <div class="avatar-stack">
+                          <img class="avatar-stack__img" src="../assets/avatars/avatar-a03.png" alt="">
+                          <img class="avatar-stack__img" src="../assets/avatars/avatar-b12.png" alt="">
+                        </div>
+                        <span class="tag tag--neutral">Under Review</span>
+                      </div>
+                    </div>
+                    <div class="task-card__footer">
+                      <div class="task-card__stats">
+                        <span class="task-card__stat"><i data-lucide="message-square"></i> 8</span>
+                        <span class="task-card__stat"><i data-lucide="paperclip"></i> 4</span>
+                      </div>
+                      <span class="task-card__date">17/09/2024</span>
+                    </div>
+                  </article>
+
+                  <article class="task-card">
+                    <div class="task-card__color-bar task-card__color-bar--info"></div>
+                    <div class="task-card__body">
+                      <span class="task-card__category task-card__category--info">Onboarding</span>
+                      <h4 class="task-card__title">Setup Dev Environment</h4>
+                      <p class="task-card__desc">Configuring local development tools and access credentials.</p>
+                      <div class="task-card__assignees-row">
+                        <div class="avatar-stack">
+                          <img class="avatar-stack__img" src="../assets/avatars/avatar-a15.png" alt="">
+                        </div>
+                        <span class="tag tag--neutral">Pending</span>
+                      </div>
+                    </div>
+                    <div class="task-card__footer">
+                      <div class="task-card__stats">
+                        <span class="task-card__stat"><i data-lucide="message-square"></i> 3</span>
+                        <span class="task-card__stat"><i data-lucide="paperclip"></i> 1</span>
+                      </div>
+                      <span class="task-card__date">20/09/2024</span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <!-- Column 2: In Progress -->
+              <div class="task-list">
+                <div class="task-list__header">
+                  <div class="task-list__header-left">
+                    <span class="task-list__indicator" style="background: var(--color-warning);"></span>
+                    <h3 class="task-list__title">In Progress</h3>
+                  </div>
+                  <div class="task-list__header-actions">
+                    <button class="task-list__action" aria-label="Add task"><i data-lucide="plus"></i></button>
+                  </div>
+                </div>
+                <div class="task-list__meta">
+                  <span class="task-list__count">1 Task</span>
+                </div>
+                <div class="task-list__cards">
+                  <article class="task-card">
+                    <div class="task-card__color-bar task-card__color-bar--high"></div>
+                    <div class="task-card__body">
+                      <span class="task-card__category task-card__category--high">High Priority</span>
+                      <h4 class="task-card__title">Fix Auth Flow Bug</h4>
+                      <p class="task-card__desc">Users are being logged out unexpectedly after token refresh.</p>
+                      <div class="task-card__assignees-row">
+                        <div class="avatar-stack">
+                          <img class="avatar-stack__img" src="../assets/avatars/avatar-a01.png" alt="">
+                        </div>
+                        <span class="tag tag--alert">Urgent</span>
+                      </div>
+                    </div>
+                    <div class="task-card__footer">
+                      <div class="task-card__stats">
+                        <span class="task-card__stat"><i data-lucide="message-square"></i> 12</span>
+                        <span class="task-card__stat"><i data-lucide="paperclip"></i> 2</span>
+                      </div>
+                      <span class="task-card__date">15/09/2024</span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── DISCUSSION ── -->
+          <section class="ds-section" id="discussion">
+            <h2 class="ds-section__title">Discussion</h2>
+            <p class="ds-section__desc">Threaded conversation UI with main post, nested replies, tags, and comment input. Button and input heights are aligned.</p>
+
+            <div class="discussion" style="max-width: 640px;">
+              <div class="discussion__post">
+                <div class="avatar avatar--md"><img src="../assets/avatars/avatar-a01.png" alt="Philip Smith"></div>
+                <div class="discussion__post-content">
+                  <div class="discussion__post-header">
+                    <span class="discussion__post-author">Philip Smith</span>
+                    <span class="discussion__post-time">1 month ago</span>
+                  </div>
+                  <h3 class="discussion__post-title">Check out our new office!</h3>
+                  <p class="discussion__post-body">I'm excited to share that we've just moved into our new workspace. The open floor plan is incredible and the natural light makes such a difference. Can't wait for everyone to visit!</p>
+                  <div class="discussion__post-tags">
+                    <span class="tag tag--category">Interior Design</span>
+                    <span class="tag tag--category">Office</span>
+                  </div>
+                  <div class="discussion__actions">
+                    <button class="discussion__action-btn"><i data-lucide="thumbs-up"></i> 3 likes</button>
+                    <button class="discussion__action-btn"><i data-lucide="message-circle"></i> 2 replies</button>
+                    <button class="btn btn--ghost btn--sm" style="margin-left: auto;">Follow</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="discussion__replies">
+                <h4 class="discussion__replies-title">2 Replies</h4>
+                <div class="discussion__reply">
+                  <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a05.png" alt="Vicente Reyes"></div>
+                  <div class="discussion__reply-content">
+                    <div class="discussion__reply-header">
+                      <span class="discussion__reply-author">Vicente Reyes</span>
+                      <span class="discussion__reply-time">3 weeks ago</span>
+                    </div>
+                    <p class="discussion__reply-body">It's looking top notch. Can't wait to check it live in person!</p>
+                  </div>
+                </div>
+                <div class="discussion__reply">
+                  <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-b03.png" alt="Sarah Chen"></div>
+                  <div class="discussion__reply-content">
+                    <div class="discussion__reply-header">
+                      <span class="discussion__reply-author">Sarah Chen</span>
+                      <span class="discussion__reply-time">2 weeks ago</span>
+                    </div>
+                    <p class="discussion__reply-body">Love the plants! Great choice on the standing desks too.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="discussion__comment-input">
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a12.png" alt="You"></div>
+                <input type="text" class="form-field__input" placeholder="Write a comment...">
+                <button class="btn btn--primary btn--md">Comment</button>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── ACTIVITY FEED ── -->
+          <section class="ds-section" id="activity-feed">
+            <h2 class="ds-section__title">Activity Feed</h2>
+            <p class="ds-section__desc">Timeline of user actions with avatars, descriptions, and timestamps. Wrapped in a card container.</p>
+
+            <div class="activity-feed" style="max-width: 520px;">
+              <div class="activity-feed__header">
+                <span class="activity-feed__title">Recent Activity</span>
+                <button class="btn btn--ghost btn--sm">View All</button>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a01.png" alt="Robert Dorwart"></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Robert Dorwart</strong> created a new project <strong>"Q4 Campaign"</strong></div>
+                  <div class="activity-item__time">2 hours ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-a05.png" alt="Vicente Reyes"></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Vicente Reyes</strong> commented on <strong>Sprint 24 Planning</strong></div>
+                  <div class="activity-item__time">4 hours ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm"><img src="../assets/avatars/avatar-b03.png" alt="Sarah Chen"></div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>Sarah Chen</strong> uploaded 3 files to <strong>Design Assets</strong></div>
+                  <div class="activity-item__time">Yesterday at 4:30 PM</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="avatar avatar--sm avatar--a">JD</div>
+                <div class="activity-item__content">
+                  <div class="activity-item__text"><strong>James Davis</strong> completed task <strong>"Update onboarding flow"</strong></div>
+                  <div class="activity-item__time">Yesterday at 2:15 PM</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── DISCOUNT WIDGET ── -->
+          <section class="ds-section" id="discount-widget">
+            <h2 class="ds-section__title">Discount Widget</h2>
+            <p class="ds-section__desc">Sidebar pricing widget with discount code input, total display, and CTA buttons. Used on event and booking detail pages.</p>
+
+            <div style="max-width: 340px;">
+              <div class="widget widget--pricing">
+                <div class="widget__section">
+                  <h3 class="widget__label">Discount code</h3>
+                  <div class="discount-input">
+                    <input type="text" class="discount-input__field" placeholder="Enter discount code">
+                    <button class="discount-input__apply">Apply</button>
+                  </div>
+                </div>
+                <div class="widget__total">
+                  <span class="widget__total-label">Total</span>
+                  <span class="widget__total-amount">$50.00</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                  <button class="btn btn--primary btn--block btn--md">Get Tickets</button>
+                  <button class="btn btn--ghost btn--block btn--md">Add to Cart</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── ATTENDEES ── -->
+          <section class="ds-section" id="attendees">
+            <h2 class="ds-section__title">Attendees</h2>
+            <p class="ds-section__desc">Sidebar widget showing attendee count with a scrollable profile list. Each row has avatar, name, role, and action menu.</p>
+
+            <div style="max-width: 340px;">
+              <div class="widget widget--attendees">
+                <div class="widget__header">
+                  <div class="widget__count">
+                    <span class="widget__count-number">284</span>
+                    <span class="widget__count-label">Attendees</span>
+                  </div>
+                  <a href="#" class="widget__view-all">View all</a>
+                </div>
+                <ul class="profile-list">
+                  <li class="profile-list__item">
+                    <img src="../assets/avatars/avatar-b12.png" class="profile-list__avatar" alt="Vicente Reyes">
+                    <div class="profile-list__info">
+                      <span class="profile-list__name">Vicente Reyes</span>
+                      <span class="profile-list__role">Product Designer</span>
+                    </div>
+                    <button class="profile-list__action" aria-label="More options"><i data-lucide="ellipsis"></i></button>
+                  </li>
+                  <li class="profile-list__item">
+                    <img src="../assets/avatars/avatar-a08.png" class="profile-list__avatar" alt="Sarah Chen">
+                    <div class="profile-list__info">
+                      <span class="profile-list__name">Sarah Chen</span>
+                      <span class="profile-list__role">Engineering Lead</span>
+                    </div>
+                    <button class="profile-list__action" aria-label="More options"><i data-lucide="ellipsis"></i></button>
+                  </li>
+                  <li class="profile-list__item">
+                    <img src="../assets/avatars/avatar-a22.png" class="profile-list__avatar" alt="Marcus Johnson">
+                    <div class="profile-list__info">
+                      <span class="profile-list__name">Marcus Johnson</span>
+                      <span class="profile-list__role">Marketing Manager</span>
+                    </div>
+                    <button class="profile-list__action" aria-label="More options"><i data-lucide="ellipsis"></i></button>
+                  </li>
+                  <li class="profile-list__item">
+                    <div class="avatar avatar--md avatar--a">KN</div>
+                    <div class="profile-list__info">
+                      <span class="profile-list__name">Kai Nakamura</span>
+                      <span class="profile-list__role">Data Analyst</span>
+                    </div>
+                    <button class="profile-list__action" aria-label="More options"><i data-lucide="ellipsis"></i></button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── BOOKING SIDEBAR ── -->
+          <section class="ds-section" id="booking-sidebar">
+            <h2 class="ds-section__title">Booking Sidebar</h2>
+            <p class="ds-section__desc">Compact sidebar form for booking configuration with date/time selection, service add-ons, discount code, total, and action buttons.</p>
+
+            <div style="max-width: 340px;">
+              <aside class="sidebar" style="width: 100%;">
+                <h2 class="sidebar__title">Select a time</h2>
+
+                <div class="sidebar__field">
+                  <label class="sidebar__label">Start:</label>
+                  <div class="sidebar__input-row">
+                    <input type="text" class="sidebar__input" value="28 Jun, 2026 - 10:00" readonly>
+                    <button class="sidebar__calendar-btn"><i data-lucide="calendar"></i></button>
+                  </div>
+                </div>
+
+                <div class="sidebar__field">
+                  <label class="sidebar__label">End:</label>
+                  <div class="sidebar__input-row">
+                    <input type="text" class="sidebar__input" value="30 Jun, 2026 - 12:00" readonly>
+                    <button class="sidebar__calendar-btn"><i data-lucide="calendar"></i></button>
+                  </div>
+                </div>
+
+                <label class="sidebar__checkbox">
+                  <input type="checkbox">
+                  Make this booking recurrent
+                </label>
+
+                <div class="sidebar__section">
+                  <h3 class="sidebar__section-title">Additional Services</h3>
+                  <div class="sidebar__service">
+                    <label><input type="checkbox" checked> Catering Service</label>
+                    <span class="sidebar__price">+$20.00</span>
+                  </div>
+                  <div class="sidebar__service">
+                    <label><input type="checkbox"> Projector</label>
+                    <span class="sidebar__price">+$30.00</span>
+                  </div>
+                </div>
+
+                <div class="sidebar__section">
+                  <h3 class="sidebar__section-title">Discount code</h3>
+                  <div class="sidebar__discount-row">
+                    <input type="text" class="sidebar__input" placeholder="Enter discount code">
+                    <button class="btn btn--outlined btn--sm">Apply</button>
+                  </div>
+                </div>
+
+                <div class="sidebar__total">
+                  <span class="sidebar__total-label">Total</span>
+                  <span class="sidebar__total-amount">$300.00</span>
+                </div>
+
+                <button class="btn btn--primary btn--lg sidebar__cta">Confirm this booking</button>
+                <button class="btn btn--outlined btn--lg sidebar__secondary">Add to Cart</button>
+              </aside>
+            </div>
+          </section>
+
+          <hr class="ds-divider">
+
+          <!-- ── TABS & FILTERS ── -->
+          <section class="ds-section" id="nav-tabs">
+            <h2 class="ds-section__title">Tabs &amp; Filters</h2>
+            <p class="ds-section__desc">Tab groups, pill filters, and view toggles for organizing content.</p>
+
+            <div class="comp-label">Tab Group</div>
+            <div class="comp-row">
+              <div class="tab-group">
+                <button class="tab-group__item tab-group__item--active">All</button>
+                <button class="tab-group__item">Active</button>
+                <button class="tab-group__item">Archived</button>
+              </div>
+            </div>
+
+            <div class="comp-label">Pill Filter</div>
+            <div class="comp-row">
+              <div class="pill-filter">
+                <button class="pill-filter__item pill-filter__item--active">All Projects</button>
+                <button class="pill-filter__item">Design</button>
+                <button class="pill-filter__item">Engineering</button>
+                <button class="pill-filter__item">Marketing</button>
+              </div>
+            </div>
+
+            <div class="comp-label">View Toggle</div>
+            <div class="comp-row">
+              <div class="view-toggle">
+                <button class="view-toggle__item view-toggle__item--active"><i data-lucide="layout-grid"></i> <span>Grid</span></button>
+                <button class="view-toggle__item"><i data-lucide="list"></i> <span>List</span></button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════
+       SCRIPTS
+       ════════════════════════════════════════════ -->
+  <script>
+    lucide.createIcons();
+
+    // --- Tab switching ---
+    const tabBtns = document.querySelectorAll('.ds-tabs__btn');
+    const panels = document.querySelectorAll('.ds-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => {
+          b.classList.remove('ds-tabs__btn--active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach(p => p.classList.remove('ds-panel--active'));
+
+        btn.classList.add('ds-tabs__btn--active');
+        btn.setAttribute('aria-selected', 'true');
+        const target = document.getElementById('panel-' + btn.dataset.tab);
+        if (target) target.classList.add('ds-panel--active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Keyboard nav
+      btn.addEventListener('keydown', e => {
+        const btns = [...tabBtns];
+        const idx = btns.indexOf(btn);
+        let next;
+        if (e.key === 'ArrowRight') next = btns[(idx + 1) % btns.length];
+        if (e.key === 'ArrowLeft') next = btns[(idx - 1 + btns.length) % btns.length];
+        if (next) { e.preventDefault(); next.click(); next.focus(); }
+      });
+    });
+
+    // --- Dark mode toggle ---
+    const themeBtn = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const stored = localStorage.getItem('ds-theme');
+    if (stored === 'dark') html.setAttribute('data-theme', 'dark');
+
+    themeBtn.addEventListener('click', () => {
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        html.removeAttribute('data-theme');
+        localStorage.setItem('ds-theme', 'light');
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        localStorage.setItem('ds-theme', 'dark');
+      }
+      updateIcon();
+    });
+
+    function updateIcon() {
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const icon = themeBtn.querySelector('[data-lucide]');
+      if (icon) {
+        icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        lucide.createIcons();
+      }
+    }
+    updateIcon();
+
+    // --- Dropdown toggle ---
+    document.querySelectorAll('[data-dropdown]').forEach(trigger => {
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        const dd = trigger.closest('.dropdown');
+        document.querySelectorAll('.dropdown--open').forEach(d => { if (d !== dd) d.classList.remove('dropdown--open'); });
+        dd.classList.toggle('dropdown--open');
+      });
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown--open').forEach(d => d.classList.remove('dropdown--open'));
+    });
+
+    // --- TOC active state on scroll ---
+    const tocLinks = document.querySelectorAll('.ds-toc__link');
+    const sections = document.querySelectorAll('.ds-section[id]');
+    const tocObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(l => l.classList.remove('ds-toc__link--active'));
+          const active = document.querySelector(`.ds-toc__link[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('ds-toc__link--active');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '-120px 0px -60% 0px' });
+    sections.forEach(s => tocObserver.observe(s));
+
+    // --- Smooth scroll for TOC links ---
+    tocLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // --- Range slider fill updates ---
+    document.querySelectorAll('.range-slider__input').forEach(input => {
+      const update = () => {
+        const pct = ((input.value - input.min) / (input.max - input.min)) * 100;
+        const fill = input.closest('.range-slider').querySelector('.range-slider__track-fill');
+        if (fill) fill.style.width = pct + '%';
+        const display = input.closest('.range-slider').querySelector('.range-slider__value-display');
+        if (display) display.textContent = Math.round(pct) + '%';
+      };
+      input.addEventListener('input', update);
+    });
+  </script>
+
+</body>
+</html>

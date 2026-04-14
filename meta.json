@@ -1,0 +1,25 @@
+{
+  "name": "Modern Startup App",
+  "slug": "modern-startup-app",
+  "version": "1.0.0",
+  "description": "Clean SaaS dashboard and booking platform design system with dark mode, 72 avatars, and a 3-layer token architecture.",
+  "tags": ["saas", "dashboard", "startup", "booking", "dark-mode", "responsive"],
+  "author": "Webinsane",
+  "components": 24,
+  "avatars": 72,
+  "features": [
+    "3-layer token architecture (raw → brand → semantic)",
+    "Dark mode via data-theme attribute",
+    "72 photo avatars in two series",
+    "Mobile-first responsive (640px, 1024px breakpoints)",
+    "WCAG AA accessible",
+    "No framework dependency"
+  ],
+  "themes": ["light", "dark"],
+  "entry": "SKILL.md",
+  "tokens": "tokens/tokens.css",
+  "examples": [
+    "examples/design-system.html",
+    "examples/doctor-dashboard.html"
+  ]
+}

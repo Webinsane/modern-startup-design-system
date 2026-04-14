@@ -1,0 +1,466 @@
+/* ============================================
+   MODERN STARTUP DESIGN SYSTEM TOKENS
+   Design tokens for the Modern Startup App design system
+
+   THEMING ARCHITECTURE
+   ════════════════════
+   Layer 1 — Raw Palette    : Fixed hex values. Never change per theme.
+   Layer 2 — Brand Slots    : Point raw colors into brand roles (brand, secondary, accent).
+                              Change ONE variable here → entire UI re-skins.
+   Layer 3 — Semantic Tokens: Consume brand slots. Map to UI concerns (surfaces, text, borders).
+                              Dark mode overrides ONLY this layer.
+
+   TO RE-BRAND:
+     Change --brand, --brand-hover, --brand-light, --brand-mid
+     (and optionally --brand-secondary / --brand-accent)
+
+   TO ADD DARK MODE:
+     Add data-theme="dark" to <html>. The [data-theme="dark"] block
+     remaps semantic tokens — no component CSS changes needed.
+   ============================================ */
+
+:root {
+
+  /* ╔══════════════════════════════════════════╗
+     ║  LAYER 1 — RAW PALETTE                  ║
+     ║  Immutable color values. Never themed.   ║
+     ╚══════════════════════════════════════════╝ */
+
+  /* Core */
+  --color-red:             #ED504E;
+  --color-black:           #1E1E1E;
+  --color-white:           #FFFFFF;
+
+  /* Spectrum */
+  --color-blue:            #325AFF;
+  --color-green:           #00BE82;
+  --color-yellow:          #FFC828;
+  --color-orange:          #FF7832;
+  --color-pink:            #FFAAC8;
+
+  /* Greys */
+  --color-grey-900:        #1E1E1E;       /* Same as black — alias for scale completeness */
+  --color-grey-800:        #2A2A2A;       /* Dark surface (sidebar flyouts) */
+  --color-grey-700:        #666666;
+  --color-grey-600:        #444444;       /* Avatar gradient endpoint */
+  --color-grey-500:        #999999;
+  --color-grey-400:        #AAAAAA;
+  --color-grey-300:        #CCCCCC;
+  --color-grey-200:        #DDDDDD;
+  --color-grey-100:        #EAEAEA;
+  --color-grey-50:         #F5F5F5;
+
+  /* Tints — lighter versions of spectrum colors */
+  --color-red-25:          #F9C7C6;
+  --color-red-15:          #FBDDDD;
+  --color-blue-50:         #98ACFF;
+  --color-blue-25:         #CBD6FF;
+  --color-blue-15:         #E5EAFF;       /* Lightest blue for dark-mode info bg */
+  --color-green-50:        #7FDEC0;
+  --color-green-25:        #BFEEE0;
+  --color-green-15:        #D9F5ED;
+  --color-yellow-50:       #FFE393;
+  --color-yellow-25:       #FFF1C9;
+  --color-orange-50:       #FFBB98;
+  --color-orange-25:       #FFDDCB;
+  --color-pink-50:         #FFD4E5;       /* Pink gradient endpoint */
+
+  /* Darkened variants — for hover states and text-on-tint */
+  --color-red-dark:        #D94544;       /* Error hover, error text on tint */
+  --color-blue-dark:       #2A4EE0;       /* Secondary hover */
+  --color-green-dark:      #00A873;       /* Success hover */
+  --color-yellow-dark:     #E0B023;       /* Warning hover */
+  --color-orange-dark:     #E56A2B;       /* Accent hover */
+
+  /* Deep text variants — high-contrast text on light tint backgrounds */
+  --color-red-text:        #B83B3A;
+  --color-blue-text:       #2A4CC8;
+  --color-green-text:      #0D7A54;
+  --color-yellow-text:     #8B6914;
+  --color-orange-text:     #C45F22;
+  --color-pending-bg:      #FDEBD0;       /* Pending status background */
+  --color-pending-text:    #9A6D38;       /* Pending status text */
+
+  /* White opacity scale — for elements on dark surfaces */
+  --white-alpha-05:        rgba(255,255,255,0.05);
+  --white-alpha-10:        rgba(255,255,255,0.1);
+  --white-alpha-15:        rgba(255,255,255,0.15);
+  --white-alpha-20:        rgba(255,255,255,0.2);
+  --white-alpha-40:        rgba(255,255,255,0.4);
+  --white-alpha-50:        rgba(255,255,255,0.5);
+  --white-alpha-60:        rgba(255,255,255,0.6);
+
+  /* Black opacity scale — for overlays and shadows */
+  --black-alpha-05:        rgba(30,30,30,0.05);
+  --black-alpha-10:        rgba(30,30,30,0.1);
+  --black-alpha-20:        rgba(30,30,30,0.2);
+  --black-alpha-50:        rgba(30,30,30,0.5);
+  --black-alpha-70:        rgba(30,30,30,0.7);
+
+
+  /* ╔══════════════════════════════════════════╗
+     ║  LAYER 2 — BRAND SLOTS                  ║
+     ║  Change these to re-skin the entire UI.  ║
+     ║  Each slot has: base, hover, light, mid. ║
+     ╚══════════════════════════════════════════╝ */
+
+  /* Brand primary — drives buttons, nav, links, checkboxes */
+  --brand:                 var(--color-black);
+  --brand-hover:           #333333;
+  --brand-light:           var(--color-grey-50);
+  --brand-mid:             var(--color-grey-100);
+
+  /* Brand secondary — drives secondary actions, focus rings, tab accents */
+  --brand-secondary:       var(--color-blue);
+  --brand-secondary-hover: var(--color-blue-dark);
+  --brand-secondary-light: var(--color-blue-25);
+  --brand-secondary-mid:   var(--color-blue-50);
+
+  /* Brand accent — drives highlights, badges, CTAs */
+  --brand-accent:          var(--color-orange);
+  --brand-accent-hover:    var(--color-orange-dark);
+  --brand-accent-light:    var(--color-orange-25);
+  --brand-accent-mid:      var(--color-orange-50);
+
+
+  /* ╔══════════════════════════════════════════╗
+     ║  LAYER 3 — SEMANTIC TOKENS              ║
+     ║  UI-facing. Dark mode overrides these.   ║
+     ╚══════════════════════════════════════════╝ */
+
+  /* --- Backgrounds --- */
+  --color-bg:              var(--color-grey-50);
+  --color-surface:         var(--color-white);
+  --color-surface-alt:     var(--color-grey-100);
+  --color-surface-active:  var(--color-grey-100);
+  --color-surface-raised:  var(--color-white);
+  --color-surface-dark:    var(--color-black);          /* Dark panels (sidebar) */
+  --color-surface-dark-alt: var(--color-grey-800);      /* Dark flyouts */
+  --color-overlay:         var(--black-alpha-50);
+
+  /* --- Text --- */
+  --color-text-primary:    var(--color-black);
+  --color-text-secondary:  var(--color-grey-700);
+  --color-text-muted:      var(--color-grey-500);
+  --color-text-inverse:    var(--color-white);
+  --color-text-on-colored: var(--color-white);          /* Text on colored (blue/green/red) backgrounds — stays white in both themes */
+  --color-text-link:       var(--color-black);
+
+  /* --- Dark-surface text (sidebar, dark panels) --- */
+  --color-text-on-dark:         var(--white-alpha-50);
+  --color-text-on-dark-hover:   var(--color-white);
+  --color-text-on-dark-muted:   var(--white-alpha-40);
+  --color-text-on-dark-subtle:  var(--white-alpha-60);
+
+  /* --- Dark-surface interactive --- */
+  --color-dark-item-hover:      var(--white-alpha-10);
+  --color-dark-item-active:     var(--white-alpha-15);
+
+  /* --- Borders --- */
+  --color-border:          var(--color-grey-200);
+  --color-border-light:    var(--color-grey-100);
+  --color-border-focus:    var(--brand-secondary);
+  --color-border-accent:   var(--brand);
+  --color-border-success:  var(--color-green);
+
+  /* --- Primary (from brand) --- */
+  --color-primary:         var(--brand);
+  --color-primary-hover:   var(--brand-hover);
+  --color-primary-light:   var(--brand-light);
+  --color-primary-mid:     var(--brand-mid);
+
+  /* --- Secondary (from brand) --- */
+  --color-secondary:       var(--brand-secondary);
+  --color-secondary-hover: var(--brand-secondary-hover);
+  --color-secondary-light: var(--brand-secondary-light);
+  --color-secondary-mid:   var(--brand-secondary-mid);
+
+  /* --- Accent (from brand) --- */
+  --color-accent:          var(--brand-accent);
+  --color-accent-hover:    var(--brand-accent-hover);
+  --color-accent-light:    var(--brand-accent-light);
+  --color-accent-mid:      var(--brand-accent-mid);
+
+  /* --- Status: Success --- */
+  --color-success:         var(--color-green);
+  --color-success-hover:   var(--color-green-dark);
+  --color-success-light:   var(--color-green-15);
+  --color-success-mid:     var(--color-green-25);
+  --color-success-text:    var(--color-green-text);     /* Text on success-light bg */
+
+  /* --- Status: Warning --- */
+  --color-warning:         var(--color-yellow);
+  --color-warning-hover:   var(--color-yellow-dark);
+  --color-warning-light:   var(--color-yellow-25);
+  --color-warning-mid:     var(--color-yellow-50);
+  --color-warning-text:    var(--color-yellow-text);    /* Text on warning-light bg */
+
+  /* --- Status: Error --- */
+  --color-error:           var(--color-red);
+  --color-error-hover:     var(--color-red-dark);
+  --color-error-light:     var(--color-red-15);
+  --color-error-mid:       var(--color-red-25);
+  --color-error-text:      var(--color-red-text);       /* Text on error-light bg */
+
+  /* --- Status: Info --- */
+  --color-info:            var(--color-blue);
+  --color-info-hover:      var(--color-blue-dark);
+  --color-info-light:      var(--color-blue-25);
+  --color-info-text:       var(--color-blue-text);      /* Text on info-light bg */
+
+  /* --- Status: Pending (domain-specific) --- */
+  --color-pending:         var(--color-orange);
+  --color-pending-light:   var(--color-pending-bg);
+  --color-pending-on-light: var(--color-pending-text);
+
+  /* --- Navigation --- */
+  --color-nav-active:      var(--brand);
+  --color-nav-active-bg:   var(--color-grey-100);
+  --color-nav-hover-bg:    var(--color-grey-50);
+
+  /* --- Decorative --- */
+  --color-decorative-pink:  var(--color-pink);
+  --color-decorative-green: var(--color-green-50);
+
+
+  /*
+   * === APPROVED COLOR COMBINATIONS ===
+   *
+   * TEXT ON BACKGROUNDS:
+   *   On White (#FFF): Black, Red, Blue, Green, Orange, Yellow
+   *   On Black (#1E1E1E): White, Red, Pink, Green, Orange, Yellow
+   *   On Red (#ED504E): Black, White only
+   *   On Blue (#325AFF): White, Green, Orange, Yellow, Pink
+   *   No approved text on Green, Yellow, Orange, or Pink backgrounds.
+   *
+   * GRAPHICS / ICONS ON BACKGROUNDS:
+   *   On White: Red, Green, Orange, Blue, Yellow, Black, Pink
+   *   On Black: Red, Green, Orange, Blue, Yellow, White, Pink
+   *   On Red: White, Black, Orange, Yellow, Pink
+   *   On Green: White, Black, Yellow, Orange, Blue, Pink
+   *   On Blue: White, Black, Yellow, Green, Pink, Red
+   *   On Pink: White, Black, Yellow, Blue, Red, Orange
+   *   On Yellow: White, Green, Black, Blue, Orange, Red
+   *   On Orange: White, Black, Yellow, Red, Pink
+   *
+   * General rule: avoid same-color-on-same-color.
+   * On dark backgrounds (Black, Blue) always include White as a fill option.
+   */
+
+
+  /* === Typography === */
+
+  /* Font Families */
+  --font-display:  'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body:     'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:     'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Type Scale */
+  --text-hero-size:    2rem;        /* 32px — page titles like "Available resources" */
+  --text-hero-weight:  700;
+  --text-hero-lh:      1.2;
+
+  --text-h1-size:      1.5rem;      /* 24px — section titles like "My Bookings" */
+  --text-h1-weight:    700;
+  --text-h1-lh:        1.25;
+
+  --text-h2-size:      1.25rem;     /* 20px — discussion post titles */
+  --text-h2-weight:    700;
+  --text-h2-lh:        1.3;
+
+  --text-h3-size:      1rem;        /* 16px — card titles like "HDMI Room" */
+  --text-h3-weight:    600;
+  --text-h3-lh:        1.4;
+
+  --text-h4-size:      0.875rem;    /* 14px — subsection labels */
+  --text-h4-weight:    600;
+  --text-h4-lh:        1.4;
+
+  --text-body-size:    0.875rem;    /* 14px — body text */
+  --text-body-weight:  400;
+  --text-body-lh:      1.5;
+
+  --text-small-size:   0.8125rem;   /* 13px — secondary info, descriptions */
+  --text-small-weight: 400;
+  --text-small-lh:     1.5;
+
+  --text-xs-size:      0.75rem;     /* 12px — tags, badges, timestamps */
+  --text-xs-weight:    500;
+  --text-xs-lh:        1.4;
+
+
+  /* === Spacing === */
+
+  --space-2xs:  0.25rem;    /*  4px  — icon internal padding */
+  --space-xs:   0.5rem;     /*  8px  — tight gaps, tag padding */
+  --space-sm:   0.75rem;    /* 12px  — between list items, compact gaps */
+  --space-md:   1rem;       /* 16px  — card internal padding, row spacing */
+  --space-lg:   1.25rem;    /* 20px  — card gaps, medium padding */
+  --space-xl:   1.5rem;     /* 24px  — section spacing, column gaps */
+  --space-2xl:  2rem;       /* 32px  — major section breaks */
+  --space-3xl:  2.5rem;     /* 40px  — page-level spacing */
+
+
+  /* === Shape & Borders === */
+
+  --radius-xs:    0.1875rem; /*  3px — tiny badges */
+  --radius-sm:    0.25rem;   /*  4px — inputs, small elements */
+  --radius-md:    0.5rem;    /*  8px — cards, buttons, dropdowns */
+  --radius-lg:    0.75rem;   /* 12px — larger cards, modals */
+  --radius-xl:    1rem;      /* 16px — panels, large containers */
+  --radius-full:  9999px;    /* pills, avatars, fully rounded buttons */
+
+  --border-width: 1px;
+  --border-width-thick: 3px;  /* Left accent border on status cards */
+  --border-style: solid;
+
+
+  /* === Shadows === */
+
+  --shadow-xs:        0 1px 2px rgba(0,0,0,0.03);
+  --shadow-card:      0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-sm:        0 2px 4px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md:        0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg:        0 8px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+  --shadow-xl:        0 16px 48px rgba(0,0,0,0.12);
+
+
+  /* === Motion === */
+
+  --transition-fast:   120ms;
+  --transition-base:   200ms;
+  --transition-slow:   350ms;
+  --easing-default:    cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-in:         cubic-bezier(0.4, 0, 1, 1);
+  --easing-out:        cubic-bezier(0, 0, 0.2, 1);
+
+
+  /* === Layout === */
+
+  --max-width:     1200px;
+  --max-width-sm:  640px;
+  --max-width-md:  960px;
+  --sidebar-width: 320px;     /* Booking sidebar width */
+  --nav-sidebar-width: 240px;  /* Navigation sidebar expanded width */
+  --nav-sidebar-collapsed: 64px; /* Navigation sidebar collapsed width */
+  --top-nav-height: 56px;    /* Top navigation bar height */
+  --grid-columns:  12;
+  --grid-gap:      var(--space-lg);  /* 20px — matches card gap from designs */
+
+  /* Detail page layout */
+  --detail-main-width:    60%;        /* Main content column */
+  --detail-sidebar-width: 340px;      /* Right sidebar widget column */
+  --detail-gap:           var(--space-xl); /* 24px — gap between main and sidebar */
+  --detail-content-max:   720px;      /* Max width for readable body text */
+
+  /* Section spacing */
+  --section-gap:          var(--space-2xl); /* 32px — between content sections */
+  --section-title-gap:    var(--space-md);  /* 16px — title to content */
+
+  --z-sticky:    100;
+  --z-dropdown:  200;
+  --z-modal:     300;
+  --z-toast:     400;
+  --z-tooltip:   500;
+}
+
+
+/* ╔══════════════════════════════════════════════════╗
+   ║  DARK THEME                                      ║
+   ║  Remaps Layer 3 semantic tokens only.             ║
+   ║  Raw palette + brand slots stay the same.         ║
+   ║  Add data-theme="dark" to <html> to activate.     ║
+   ╚══════════════════════════════════════════════════╝ */
+
+[data-theme="dark"] {
+  /* Backgrounds */
+  --color-bg:              #141414;
+  --color-surface:         var(--color-black);
+  --color-surface-alt:     var(--color-grey-800);
+  --color-surface-active:  var(--color-grey-800);
+  --color-surface-raised:  #252525;
+  --color-surface-dark:    #0A0A0A;
+  --color-surface-dark-alt: #111111;
+  --color-overlay:         var(--black-alpha-70);
+
+  /* Text */
+  --color-text-primary:    var(--color-grey-50);
+  --color-text-secondary:  var(--color-grey-400);
+  --color-text-muted:      var(--color-grey-500);
+  --color-text-inverse:    var(--color-black);
+  --color-text-on-colored: var(--color-white);
+  --color-text-link:       var(--color-grey-50);
+
+  /* Borders */
+  --color-border:          #333333;
+  --color-border-light:    #2A2A2A;
+  --color-border-focus:    var(--brand-secondary);
+
+  /* Primary — in dark mode, primary buttons become light-on-dark */
+  --color-primary:         var(--color-white);
+  --color-primary-hover:   var(--color-grey-200);
+  --color-primary-light:   var(--color-grey-800);
+  --color-primary-mid:     var(--color-grey-700);
+
+  /* Secondary — tinted backgrounds for dark surfaces */
+  --color-secondary-light: rgba(50,90,255,0.15);
+  --color-secondary-mid:   rgba(50,90,255,0.25);
+
+  /* Status backgrounds shift to darker, desaturated tints */
+  --color-success-light:   rgba(0,190,130,0.12);
+  --color-success-mid:     rgba(0,190,130,0.20);
+  --color-success-text:    var(--color-green-50);
+
+  --color-warning-light:   rgba(255,200,40,0.12);
+  --color-warning-mid:     rgba(255,200,40,0.20);
+  --color-warning-text:    var(--color-yellow-50);
+
+  --color-error-light:     rgba(237,80,78,0.12);
+  --color-error-mid:       rgba(237,80,78,0.20);
+  --color-error-text:      var(--color-red-25);
+
+  --color-info-light:      rgba(50,90,255,0.12);
+  --color-info-text:       var(--color-blue-50);
+
+  --color-pending-light:   rgba(255,120,50,0.12);
+  --color-pending-on-light: var(--color-orange-50);
+
+  /* Navigation */
+  --color-nav-active:      var(--color-white);
+  --color-nav-active-bg:   var(--white-alpha-15);
+  --color-nav-hover-bg:    var(--white-alpha-10);
+
+  /* Shadows — stronger in dark mode */
+  --shadow-xs:        0 1px 2px rgba(0,0,0,0.15);
+  --shadow-card:      0 1px 3px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.12);
+  --shadow-sm:        0 2px 4px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.15);
+  --shadow-md:        0 4px 8px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);
+  --shadow-lg:        0 8px 24px rgba(0,0,0,0.30), 0 4px 8px rgba(0,0,0,0.20);
+  --shadow-xl:        0 16px 48px rgba(0,0,0,0.40);
+}
+
+
+/* ╔══════════════════════════════════════════════════╗
+   ║  BRAND THEME EXAMPLE (commented out)              ║
+   ║  Uncomment and change values to re-skin.          ║
+   ║  Only Layer 2 brand slots need changing.          ║
+   ╚══════════════════════════════════════════════════╝ */
+
+/*
+[data-theme="brand-teal"] {
+  --brand:                 #0D9488;
+  --brand-hover:           #0B7C72;
+  --brand-light:           #E6FAF8;
+  --brand-mid:             #B2EDE7;
+
+  --brand-secondary:       #6366F1;
+  --brand-secondary-hover: #4F46E5;
+  --brand-secondary-light: #E0E7FF;
+  --brand-secondary-mid:   #A5B4FC;
+
+  --brand-accent:          #F59E0B;
+  --brand-accent-hover:    #D97706;
+  --brand-accent-light:    #FEF3C7;
+  --brand-accent-mid:      #FCD34D;
+}
+*/

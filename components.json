@@ -1,0 +1,236 @@
+{
+  "components": [
+    {
+      "slug": "sidebar-nav",
+      "file": "sidebar-nav.md",
+      "name": "Sidebar Nav",
+      "description": "App sidebar with collapsed (icon-only) and expanded modes, teal active states",
+      "category": "Navigation & Layout",
+      "depends": []
+    },
+    {
+      "slug": "top-nav",
+      "file": "top-nav.md",
+      "name": "Top Nav",
+      "description": "Top bar with search, notifications dropdown, and profile menu",
+      "category": "Navigation & Layout",
+      "depends": ["avatars"]
+    },
+    {
+      "slug": "top-nav-tabs",
+      "file": "top-nav-tabs.md",
+      "name": "Top Nav Tabs",
+      "description": "Content tabs below top nav for section switching",
+      "category": "Navigation & Layout",
+      "depends": []
+    },
+    {
+      "slug": "navigation",
+      "file": "navigation.md",
+      "name": "Navigation",
+      "description": "In-page nav: view toggles, tab groups, pill filters",
+      "category": "Navigation & Layout",
+      "depends": []
+    },
+    {
+      "slug": "page-layout",
+      "file": "page-layout.md",
+      "name": "Page Layout",
+      "description": "Dashboard grid and detail page (main + sidebar) layouts",
+      "category": "Navigation & Layout",
+      "depends": []
+    },
+    {
+      "slug": "page-header",
+      "file": "page-header.md",
+      "name": "Page Header",
+      "description": "Breadcrumbs, page title, and action buttons",
+      "category": "Navigation & Layout",
+      "depends": ["buttons"]
+    },
+    {
+      "slug": "cards",
+      "file": "cards.md",
+      "name": "Cards",
+      "description": "Room/event/discussion cards with status variants and interactive styles",
+      "category": "Data & Content",
+      "depends": ["tags-badges"]
+    },
+    {
+      "slug": "stat-cards",
+      "file": "stat-cards.md",
+      "name": "Stat Cards",
+      "description": "Dashboard stat widgets with charts, trend badges, and 4-column grid",
+      "category": "Data & Content",
+      "depends": []
+    },
+    {
+      "slug": "tables",
+      "file": "tables.md",
+      "name": "Tables",
+      "description": "Data tables with row highlighting, status badges, and avatars",
+      "category": "Data & Content",
+      "depends": ["tags-badges", "avatars"]
+    },
+    {
+      "slug": "schedule-cards",
+      "file": "schedule-cards.md",
+      "name": "Schedule Cards",
+      "description": "Day-view schedule with color-coded meetings, events, and absences",
+      "category": "Data & Content",
+      "depends": ["avatars", "tags-badges"]
+    },
+    {
+      "slug": "content-sections",
+      "file": "content-sections.md",
+      "name": "Content Sections",
+      "description": "Body text paragraphs, section headings, two-column checklists",
+      "category": "Data & Content",
+      "depends": []
+    },
+    {
+      "slug": "chat-discussion",
+      "file": "chat-discussion.md",
+      "name": "Chat Discussion",
+      "description": "Discussion board with threaded replies and actions",
+      "category": "Data & Content",
+      "depends": ["avatars", "buttons", "tags-badges"]
+    },
+    {
+      "slug": "task-list",
+      "file": "task-list.md",
+      "name": "Task List",
+      "description": "Kanban column with priority bars, assignee avatars, status badges",
+      "category": "Data & Content",
+      "depends": ["avatars", "tags-badges"]
+    },
+    {
+      "slug": "pagination",
+      "file": "pagination.md",
+      "name": "Pagination",
+      "description": "Page navigation with Previous/Next, numbered pages, ellipsis",
+      "category": "Data & Content",
+      "depends": []
+    },
+    {
+      "slug": "empty-states",
+      "file": "empty-states.md",
+      "name": "Empty States",
+      "description": "Empty content placeholder with illustration and call-to-action",
+      "category": "Data & Content",
+      "depends": ["buttons"]
+    },
+    {
+      "slug": "buttons",
+      "file": "buttons.md",
+      "name": "Buttons",
+      "description": "Pill buttons in four sizes (Large/Medium/Small/Tiny), filled and outlined",
+      "category": "Forms & Inputs",
+      "depends": []
+    },
+    {
+      "slug": "tags-badges",
+      "file": "tags-badges.md",
+      "name": "Tags & Badges",
+      "description": "Status badges, category tags, and removable filter tags",
+      "category": "Forms & Inputs",
+      "depends": []
+    },
+    {
+      "slug": "forms",
+      "file": "forms.md",
+      "name": "Forms",
+      "description": "Text inputs, date pickers, checkboxes, chip inputs, tag selectors",
+      "category": "Forms & Inputs",
+      "depends": ["buttons"]
+    },
+    {
+      "slug": "alerts",
+      "file": "alerts.md",
+      "name": "Alerts",
+      "description": "Inline notification banners in four semantic variants with icon and close button",
+      "category": "Forms & Inputs",
+      "depends": []
+    },
+    {
+      "slug": "toggles",
+      "file": "toggles.md",
+      "name": "Toggles",
+      "description": "Toggle switches with pill track and knob in three sizes, labeled and disabled variants",
+      "category": "Forms & Inputs",
+      "depends": []
+    },
+    {
+      "slug": "range-sliders",
+      "file": "range-sliders.md",
+      "name": "Range Sliders",
+      "description": "Range sliders with tick marks, PX input pairing, and accent fill variants",
+      "category": "Forms & Inputs",
+      "depends": []
+    },
+    {
+      "slug": "search-filter-bar",
+      "file": "search-filter-bar.md",
+      "name": "Search Filter Bar",
+      "description": "Search input, date pickers, view toggles, and active filter tags",
+      "category": "Forms & Inputs",
+      "depends": ["buttons", "tags-badges", "navigation"]
+    },
+    {
+      "slug": "avatars",
+      "file": "avatars.md",
+      "name": "Avatars",
+      "description": "Circular avatars and stacked groups — 72 photos included (a01–a36, b01–b36)",
+      "category": "Widgets & Patterns",
+      "depends": []
+    },
+    {
+      "slug": "attendees",
+      "file": "attendees.md",
+      "name": "Attendees",
+      "description": "Sidebar widget showing attendee count and profile list",
+      "category": "Widgets & Patterns",
+      "depends": ["avatars"]
+    },
+    {
+      "slug": "booking-sidebar",
+      "file": "booking-sidebar.md",
+      "name": "Booking Sidebar",
+      "description": "Booking configuration form with services, discount, and total",
+      "category": "Widgets & Patterns",
+      "depends": ["buttons", "forms"]
+    },
+    {
+      "slug": "discount-widget",
+      "file": "discount-widget.md",
+      "name": "Discount Widget",
+      "description": "Discount code input, total price, and call-to-action buttons",
+      "category": "Widgets & Patterns",
+      "depends": ["buttons", "forms"]
+    },
+    {
+      "slug": "modals",
+      "file": "modals.md",
+      "name": "Modals",
+      "description": "Modal dialogs with backdrop, header, body, and footer actions",
+      "category": "Widgets & Patterns",
+      "depends": ["buttons"]
+    },
+    {
+      "slug": "toasts",
+      "file": "toasts.md",
+      "name": "Toasts",
+      "description": "Floating notification toasts in light and dark themes across all semantic types",
+      "category": "Widgets & Patterns",
+      "depends": []
+    },
+    {
+      "slug": "tooltip",
+      "file": "tooltip.md",
+      "name": "Tooltip",
+      "description": "Hover tooltips with arrow positioning",
+      "category": "Widgets & Patterns",
+      "depends": []
+    }
+  ]
+}
